@@ -20,6 +20,4 @@ Secondly there is extensive tools for more advanced compiler writing such as par
 
 I will be writing these articles as I work my way through LBaC in my spare time as and when I can find it, so they may be a little few and far between.
 
-All code, and these articles, will be available on Github. You will also need [LBaC](http://compilers.iecc.com/crenshaw/) ([PDF Version](http://www.stack.nl/~marcov/compiler.pdf)) and the [Haskell Platform](http://hackage.haskell.org/platform/).
-
-[Part 2 - The Cradle]()
+All code, and these articles, will be available on [Github](http://github.com/alephnullplex/cradle). You will also need [LBaC](http://compilers.iecc.com/crenshaw/) ([PDF Version](http://www.stack.nl/~marcov/compiler.pdf)) and the [Haskell Platform](http://hackage.haskell.org/platform/).
