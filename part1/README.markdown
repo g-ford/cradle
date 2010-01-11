@@ -6,7 +6,7 @@ So rather than spending time and money diving into the deep end, I decided to st
 
 However there was one problem with LBaC:
 
-> This is a "learn-by-doing" series. In the course of the series I will be performing experiments on a computer. You will be expected to follow along, repeating the experiments that I do, and performing some on your own. I will be using *Turbo Pascal 4.0* on a PC clone. 
+> This is a "learn-by-doing" series. In the course of the series I will be performing experiments on a computer. You will be expected to follow along, repeating the experiments that I do, and performing some on your own. I will be using **Turbo Pascal 4.0** on a PC clone. 
 
 Yep, this series was written way back in the 90's when [Turbo Pascal](http://en.wikipedia.org/wiki/Turbo_Pascal) was cool.  Thankfully the theory and basic practices are still relevant. 
 
