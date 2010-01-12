@@ -47,7 +47,7 @@ When I just used the basic `error` function it didn't really seem to be what I w
 
 For now I have settled on Eric Kidd's third method - using `Either String a`.  At some point in the future I intend on moving to the fourth method due to Kidd's plea.
 
-> If you’re writing new Haskell libraries for public consumption, and all your errors are strings, please consider using this error-reporting method.
+> If you're writing new Haskell libraries for public consumption, and all your errors are strings, please consider using this error-reporting method.
 
 ## Single Digits
 
