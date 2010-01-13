@@ -1,7 +1,7 @@
 import Char
 
 -- Throw an expected error
-expected s = error (s ++ " expected")
+expected s = s ++ " expected"
 
 -- Tests two chars match
 matchChar :: Char -> Char -> Bool 
