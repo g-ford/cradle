@@ -9,17 +9,17 @@ matchChar x y = x == y
 
 -- Gets and identifier.
 -- Throws an expected error if it is not an alpha
-getName :: Char -> Either String Char
+getName :: Char -> Char
 getName x 
-  | isAlpha x = Right x
-  | otherwise = Left (expected "Name")
+  | isAlpha x = x
+  | otherwise = error (expected "Name")
 
 -- Checks if the char is a digit.
 -- Throws an expected error if it is not a digit
-getNum :: Char -> Either String Char
+getNum :: Char -> Char
 getNum x 
-  | isDigit x = Right x
-  | otherwise = Left (expected "Integer")
+  | isDigit x = x
+  | otherwise = error (expected "Integer")
 
 -- Prefix a string with a tab
 emit s = "\t" ++ s
@@ -27,7 +27,5 @@ emit s = "\t" ++ s
 -- Prefix a string with a tab and postfix it with a new line
 emitLn s = (emit s) ++ "\n"
 
-expression x = 
-  case getNum x of
-    Left msg  -> putStrLn msg
-    Right num -> putStrLn $ emitLn ("MOVE #" ++ [num] ++ ",D0")
+expression x = emitLn ("MOVE #" ++ [num] ++ ",D0")
+    where num = getNum x
