@@ -11,29 +11,29 @@ This is the basic framework of utility functions that  Crenshaw calls the cradle
     import Char
 
     -- Throw an expected error
-    expected s = error (s ++ " expected")
-
+    expected s = s ++ " expected"
+    
     -- Tests two chars match
     matchChar :: Char -> Char -> Bool 
     matchChar x y = x == y
-
+    
     -- Gets and identifier.
     -- Throws an expected error if it is not an alpha
-    getName :: Char -> Either String Char
+    getName :: Char -> Char
     getName x 
-      | isAlpha x = Right x
-      | otherwise = Left (expected "Name")
-
+      | isAlpha x = x
+      | otherwise = error (expected "Name")
+    
     -- Checks if the char is a digit.
     -- Throws an expected error if it is not a digit
-    getNum :: Char -> Either String Char
+    getNum :: Char -> Char
     getNum x 
-      | isDigit x = Right x
-      | otherwise = Left (expected "Integer")
-
+      | isDigit x = x
+      | otherwise = error (expected "Integer")
+    
     -- Prefix a string with a tab
     emit s = "\t" ++ s
-
+    
     -- Prefix a string with a tab and postfix it with a new line
     emitLn s = (emit s) ++ "\n"
 
@@ -43,9 +43,7 @@ As you can see this is a little bit simpler than the Turbo Pascal version.  We g
 
 The hardest part of setting up the cradle was figuring out how to handle error conditions.  Apparently there is [8 different ways to report errors](http://www.randomhacks.net/articles/2007/03/10/haskell-8-ways-to-report-errors) most of which are based on Monads which I am hesitant to introduce at this stage - mostly because I have not actually groked them yet.
 
-When I just used the basic `error` function it didn't really seem to be what I wanted as I was getting output like `"\tMOVE #*** Exception: Integer expected` which was clearly wrong.
-
-For now I have settled on Eric Kidd's third method - using `Either String a`.  At some point in the future I intend on moving to the fourth method due to Kidd's plea.
+When I just used the basic `error` function it didn't really seem to be what I wanted as I was getting output like `"\tMOVE #*** Exception: Integer expected`. For now I have accepted this to keep things simple. At some point in the future I intend on moving to the fourth method due to Kidd's plea.
 
 > If you're writing new Haskell libraries for public consumption, and all your errors are strings, please consider using this error-reporting method.
 
@@ -55,10 +53,8 @@ So let's use the cradle so far to create a simple single digit 'translator'.  Ju
 
 Put this at the end of `cradle.hs`.
 
-    expression x = 
-      case getNum x of
-        Left msg  -> putStrLn msg
-        Right num -> putStrLn $ emitLn ("MOVE #" ++ [num] ++ ",D0")
+    expression x = emitLn ("MOVE #" ++ [num] ++ ",D0")
+        where num = getNum x
 
 And then go ahead and test it.
 
@@ -66,7 +62,7 @@ And then go ahead and test it.
     [1 of 1] Compiling Main             ( cradle.hs, interpreted )
     Ok, modules loaded: Main.
     *Main> expression 'a'
-    *** Exception: Integer expected
+    "\tMOVE #*** Exception: Integer expected
     *Main> expression '1'
         MOVE #1,D0
 
