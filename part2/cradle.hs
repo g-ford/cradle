@@ -27,5 +27,5 @@ emit s = "\t" ++ s
 -- Prefix a string with a tab and postfix it with a new line
 emitLn s = (emit s) ++ "\n"
 
-expression x = emitLn ("MOVE eax, " ++ [num])
+expression x = emitLn ("MOV eax, " ++ [num])
     where num = getNum x
