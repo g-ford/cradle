@@ -53,7 +53,7 @@ So let's use the cradle so far to create a simple single digit 'translator'.  Ju
 
 Put this at the end of `cradle.hs`.
 
-    expression x = emitLn ("MOVE #" ++ [num] ++ ",D0")
+    expression x = emitLn ("MOV eax, " ++ [num])
         where num = getNum x
 
 And then go ahead and test it.
@@ -62,9 +62,9 @@ And then go ahead and test it.
     [1 of 1] Compiling Main             ( cradle.hs, interpreted )
     Ok, modules loaded: Main.
     *Main> expression 'a'
-    "\tMOVE #*** Exception: Integer expected
+    "\tMOV eax*** Exception: Integer expected
     *Main> expression '1'
-        MOVE #1,D0
+        MOV eax, 1
 
 
 As you can see, it successfully detects whether the expression is an integer or not. If it is an integer, it emits some asm which I assume puts the number on the stack (I've yet to learn asm as well). Not very exciting, but it's a start. 

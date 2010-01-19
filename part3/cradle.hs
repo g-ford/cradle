@@ -27,7 +27,7 @@ emit s = "\t" ++ s
 -- Prefix a string with a tab and postfix it with a new line
 emitLn s = (emit s) ++ "\n"
 
-term x = emitLn ("MOVE #" ++ [num] ++ ",D0")
+term x = emitLn ("MOVE eax, " ++ [num])
     where num = getNum x
 
 getOp :: Char -> String
@@ -36,12 +36,12 @@ getOp x
   | x == '-'  = sub
   | otherwise = error (expected "Addop")
 
-add = emitLn "ADD\tD1,D0"
-sub = emitLn "SUB\tD1,D0"
+add = emitLn "ADD eax, ebx"
+sub = emitLn "SUB eax, ebx"
 
 expression (x:y:z:[]) = a ++ mov ++ b ++ op
     where   a = term x 
-            mov = emitLn "MOV\tDO, D1"
+            mov = emitLn "MOV ebx, eax"
             b = term z
             op = getOp y
             
