@@ -40,14 +40,10 @@ add = emitLn "ADD eax, ebx"
 sub = emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
 
 expression :: String -> String
-expression (x:xs) = a ++ (subexpression xs)
-  where   a = term x 
-
-subexpression :: String -> String
-subexpression [] = ""
-subexpression (x:y:zs) = mov ++ b ++ op ++ (subexpression zs)
-  where mov = emitLn "MOV ebx, eax"
-        b = term y
-        op = getOp x
+expression (x:y:z:[]) = a ++ mov ++ b ++ op
+  where a = term x
+        mov = emitLn "MOV ebx, eax"
+        b = term z
+        op = getOp y
             
  
