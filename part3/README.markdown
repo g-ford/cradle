@@ -1,10 +1,10 @@
-#Let's build a compiler (in Haskell): Part 3 - Basic Expressions
+#Let's build a compiler (in Haskell): Part 3 - Addition & Subtaction
 
 ## Binary addition and subtraction
 
 Now that we can successfully detect single digits, we will extend that to simple addition and subtraction with only two terms. i.e. 
   
-  <expression> ::= <term>+/-<term>
+    <expression> ::= <term>+/-<term>
 
 A term in our compiler, at this stage, is just a single digit, so we can rename the existing `expression` to `term`.
 
@@ -61,6 +61,8 @@ That is enough now, to 'compile' any single digit, binary addition or subtractio
     *Main> putStr $ expression "1+2+3"
     *** Exception: cradle.hs:(42,0)-(46,23): Non-exhaustive patterns in function expression
 
+[Download cradle.binary.hs](http://github.com/alephnullplex/cradle/blob/master/part3/cradle.binary.hs)
+
 ## Extending binary addition to n-ary
 
 The general expression for n-ary addition and subtraction is:
@@ -81,3 +83,29 @@ Crenshaw implements this as a loop, but we will use recursion instead.  From the
             op = getOp x
 
 So now we can process arbitrary length addition and subtraction and even a combination of the two.
+
+[Download cradle.n-ary.hs](http://github.com/alephnullplex/cradle/blob/master/part3/cradle.n-ary.hs)
+
+## Using the stack
+
+So far we have been directly using the two registers `eax` and `ebx` under the assumption that calculate the `addop` as soon as it comes up.  This works in the general addition and subtraction case, but when we move onto multiplication and division a problem arises.  Operateor precedence.  
+
+Whoever decided that multiplication is more important than addition, and that this should be true even when you don't use parenthese, was a madman. Anyway, even without operator precedence, the current technique would not be able to handle expressions such as `5-(1+2)`. 
+
+To handle this, we use a stack.  We can store an arbitraty number of items on the stack in last-in first-out manner.  It is a relatively minor change to the existing code to use the stack. Instead of moving `eax` into `ebx` we `PUSH` it onto the stack.  Then `add` and `sub` simply `POP` the top term off before doing there calculations.
+
+Add and sub become:
+
+    add = emitLn "POP ebx" ++ emitLn "ADD eax, ebx"
+    sub = emitLn "POP ebx" ++ emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
+
+And subexpression changes to:
+
+    subexpression :: String -> String
+    subexpression [] = ""
+    subexpression (x:y:zs) = mov ++ b ++ op ++ (subexpression zs)
+      where mov = emitLn "PUSH eax"
+            b = term y
+            op = getOp x
+
+Now that we have our asm using a stack it will make it much easier to implement operator precedence and parenthesis.

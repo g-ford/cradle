@@ -36,8 +36,8 @@ getOp x
   | x == '-'  = sub
   | otherwise = error (expected "Addop")
 
-add = emitLn "ADD eax, ebx"
-sub = emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
+add = emitLn "POP ebx" ++ emitLn "ADD eax, ebx"
+sub = emitLn "POP ebx" ++ emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
 
 expression :: String -> String
 expression (x:xs) = a ++ (subexpression xs)
@@ -46,8 +46,6 @@ expression (x:xs) = a ++ (subexpression xs)
 subexpression :: String -> String
 subexpression [] = ""
 subexpression (x:y:zs) = mov ++ b ++ op ++ (subexpression zs)
-  where mov = emitLn "MOV ebx, eax"
+  where mov = emitLn "PUSH eax"
         b = term y
         op = getOp x
-            
- 
