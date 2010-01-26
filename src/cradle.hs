@@ -3,10 +3,6 @@ import Char
 -- Throw an expected error
 expected s = s ++ " expected"
 
--- Tests two chars match
-matchChar :: Char -> Char -> Bool 
-matchChar x y = x == y
-
 -- Gets and identifier.
 -- Throws an expected error if it is not an alpha
 getName :: Char -> Char
@@ -27,10 +23,6 @@ emit s = "\t" ++ s
 -- Prefix a string with a tab and postfix it with a new line
 emitLn s = (emit s) ++ "\n"
 
--- A single digit
-factor x = emitLn ("MOV eax, " ++ [num])
-    where num = getNum x
-
 -- Basic math functions
 popEbx = emitLn "POP ebx"
 pushEax = emitLn "PUSH eax"
@@ -39,11 +31,30 @@ sub = popEbx ++ emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
 mul = popEbx ++ emitLn "MUL ebx"
 divide = popEbx ++ emitLn "DIV ebx" 
 
+-- A single digit
+factor :: Char -> String
+factor x = emitLn ("MOV eax, " ++ [num])
+    where num = getNum x
+
+-- A term is a multiplication operation involving 1 or more factors
 term :: String -> String
-term (x:xs) = a ++ (subterm xs)
-  where   a = factor x 
-          subterm [] = ""
-          subterm (x:y:zs) 
-            | x == '*'  = pushEax ++ factor y ++ mul ++ (subterm zs)
-            | x == '/'  = pushEax ++ factor y ++ divide ++ (subterm zs)
-            | otherwise = error (expected "MulOp")
+term (x:xs) = (factor x) ++ (subterm xs) 
+
+subterm :: String -> String  
+subterm [] = ""
+subterm (x:y:zs) 
+    | x == '*'  = pushEax ++ factor y ++ mul ++ subterm zs
+    | x == '/'  = pushEax ++ factor y ++ divide ++ subterm zs
+    | x == '+' || x == '-' = subexpression (x:y:zs)
+    | otherwise = error (expected "MulOp")
+
+-- An expression is an add operation involving one or more terms
+expression :: String -> String
+expression x = term x
+
+subexpression :: String -> String
+subexpression [] = ""
+subexpression (x:ys)
+    | x == '+'  = pushEax ++ term ys ++ add
+    | x == '-'  = pushEax ++ term ys ++ sub
+    | otherwise = error (expected "AddOp")
