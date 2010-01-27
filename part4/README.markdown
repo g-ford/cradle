@@ -1,4 +1,4 @@
-#Let's build a compiler (in Haskell): Part 4 - Operator Precedence & Parentheses
+#Let's build a compiler (in Haskell): Part 4 - Operator Precedence 
 
 ## Operator Precedence
 
@@ -53,7 +53,7 @@ And that's it.  If you test this out in `ghci` you can see that each digit is pu
 
 ## Doing it with Types
 
-Up until this point, I have been working on doing a nearly direct translation of Crenshaws tutorial to Haskell.  After reading Andersons' paper _Parsing with Haskell_ [1] I realised that Haskell has a very powerful Type system for a reason.
+Up until now, I have been doing a near direct translation of Crenshaws' tutorial to Haskell.   After reading Andersons' paper _Parsing with Haskell_ [1] I realised that Haskell has a very powerful Type system for a reason.
 
 So let's take a step back and rework what has been done so far using Types and we'll see how much easier, extensible and safer it is to use.
 
@@ -68,7 +68,8 @@ And translating that into Haskell is actually very similar:
     data Expression = Add Term Term
                     | Sub Term Term
     
-    data Term = MulOp Factor Factor
+    data Term = Mul Factor Factor
+              | Div Factor Factor
     
     data Factor = Num Int
 
@@ -97,7 +98,7 @@ With a little bit of simplification we can refactor the types to a single type.
                     | Sub Expression Expression
                     | Mul Expression Expression
                     | Div Expression Expression
-                    deriving (Show)
+                    deriving (Show) 
 
 A bit of playing around in the interpretor shows that because everything is now an `Expression` we can much more easily combine and recombine these easily and intuituvely.
 
@@ -116,4 +117,6 @@ A bit of playing around in the interpretor shows that because everything is now 
     b :: Expression
     *Main> show b
     "Add (Add (Num 1) (Num 1)) (Sub (Num 3) (Mul (Num 2) (Num 3)))"
+
+
 
