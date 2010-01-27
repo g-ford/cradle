@@ -1,6 +1,6 @@
 #Let's build a compiler (in Haskell): Part 5 - Doing it with Types
 
-Up until now, I have been doing a near direct translation of Crenshaws' tutorial to Haskell.   After reading Andersons' paper _Parsing with Haskell_ [1] I realised that Haskell has a very powerful Type system for a reason.
+Up until now, I have been doing a near direct translation of Crenshaws tutorial to Haskell.   After reading Andersons paper _Parsing with Haskell_ [1] I realised that Haskell has a very powerful Type system for a reason.
 
 ## Defining the Types
 
@@ -28,7 +28,7 @@ However using this means that to define an expression we need to use something l
     *Main> :t y
     y :: Expression
 
-That is a bit cumbersome.  Another problem arises when we want to then use that expression in another expression.
+That is a wee bit cumbersome. To add 2 and 3 I have to multiply each by 1. Another problem arises when we want to then use that expression in another expression.
 
     *Main> let z = Add y y
 
@@ -67,3 +67,29 @@ A bit of playing around in the interpretor shows that because everything is now 
     *Main> show b
     "Add (Add (Num 1) (Num 1)) (Sub (Num 3) (Mul (Num 2) (Num 3)))"
 
+## Back to the Future : Single Integers
+
+Now that we have this amazing Type `Expression` how do we parse input strings with it?
+
+    parse :: String -> [Expression]
+    parse [] = []
+    parse (x:xs)
+        | isDigit x = Num (digitToInt x) : parse xs
+
+Wow, we are back to 3 articles ago. Well actually not quite, as this does not emit any assembly. We can fix that by creating an new `emit` funtion and then we can create a shortcut to parse and emit.
+
+    -- Prefix a string with a tab
+    emitSt s = "\t" ++ s
+    
+    -- Prefix a string with a tab and postfix it with a new line
+    emitLn s = (emitSt s) ++ "\n"
+    
+    emit :: [Expression] -> String
+    emit [] = ""
+    emit (expr:rest) = case expr of 
+         Num a -> emitLn ("MOV eax, " ++ (show a)) ++ emit rest
+    
+    parseAndEmit :: String -> String
+    parseAndEmit = emit . parse
+
+## Back to the Future Part 2 : Addition
