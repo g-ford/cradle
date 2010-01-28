@@ -94,52 +94,52 @@ Wow, we are back to 3 articles ago. Well actually not quite, as this does not em
 
 Defining the basic addition is now a little simpler as well.
 
-parse :: String -> Expression
-parse (x:y:zs) 
-    | y == '+'  = Add (parse [x]) (parse zs)
-    | y == '-'  = Sub (parse [x]) (parse zs)
-parse (x:[])
-    | isDigit x = Num (digitToInt x)
+    parse :: String -> Expression
+    parse (x:y:zs) 
+        | y == '+'  = Add (parse [x]) (parse zs)
+        | y == '-'  = Sub (parse [x]) (parse zs)
+    parse (x:[])
+        | isDigit x = Num (digitToInt x)
 
 This form also handles multiple additions, and extends nicely to multiplication.
 
-parse :: String -> Expression
-parse (x:y:zs) 
-    | y == '*'  = Mul (parse [x]) (parse zs)
-    | y == '/'  = Div (parse [x]) (parse zs)
-    | y == '+'  = Add (parse [x]) (parse zs)
-    | y == '-'  = Sub (parse [x]) (parse zs)
-parse (x:[])
-    | isDigit x = Num (digitToInt x)
+    parse :: String -> Expression
+    parse (x:y:zs) 
+        | y == '*'  = Mul (parse [x]) (parse zs)
+        | y == '/'  = Div (parse [x]) (parse zs)
+        | y == '+'  = Add (parse [x]) (parse zs)
+        | y == '-'  = Sub (parse [x]) (parse zs)
+    parse (x:[])
+        | isDigit x = Num (digitToInt x)
     
 ##Back to the Future Part 3 : Opertator Precedence
 
 There's a small problem with the redefined `parse` above - it does not honour operator precedence.  To get this we have to look a little futher ahead in the string. Because we are only dealing with single digits, this is rather easy.
 
-parse :: String -> Expression
-parse (a:b:c:d:ds) 
-    | d == '+'  = Add (parse [a,b,c]) (parse ds)
-    | d == '-'  = Sub (parse [a,b,c]) (parse ds)
-parse (x:y:zs) 
-    | y == '*'  = Mul (parse [x]) (parse zs)
-    | y == '/'  = Div (parse [x]) (parse zs)
-    | y == '+'  = Add (parse [x]) (parse zs)
-    | y == '-'  = Sub (parse [x]) (parse zs)
-parse (x:[])
-    | isDigit x = Num (digitToInt x)
+    parse :: String -> Expression
+    parse (a:b:c:d:ds) 
+        | d == '+'  = Add (parse [a,b,c]) (parse ds)
+        | d == '-'  = Sub (parse [a,b,c]) (parse ds)
+    parse (x:y:zs) 
+        | y == '*'  = Mul (parse [x]) (parse zs)
+        | y == '/'  = Div (parse [x]) (parse zs)
+        | y == '+'  = Add (parse [x]) (parse zs)
+        | y == '-'  = Sub (parse [x]) (parse zs)
+    parse (x:[])
+        | isDigit x = Num (digitToInt x)
 
 ## Getting emit to work.
 
 The last thing to get us back up to spec is to actually emit all the assembly again.  We'll just extend `emit` with more cases that should look pretty familir.
 
--- Turns an expression into the equvilent assembly
-emit :: Expression -> String
-emit expr = case expr of 
-     Num a   -> emitLn ("MOV eax, " ++ (show a))
-     Add a b -> emit a ++  pushEax ++ emit b ++ add
-     Sub a b -> emit a ++  pushEax ++ emit b ++ sub
-     Mul a b -> emit a ++  pushEax ++ emit b ++ mul
-     Div a b -> emit a ++  pushEax ++ emit b ++ divide
+    -- Turns an expression into the equvilent assembly
+    emit :: Expression -> String
+    emit expr = case expr of 
+         Num a   -> emitLn ("MOV eax, " ++ (show a))
+         Add a b -> emit a ++  pushEax ++ emit b ++ add
+         Sub a b -> emit a ++  pushEax ++ emit b ++ sub
+         Mul a b -> emit a ++  pushEax ++ emit b ++ mul
+         Div a b -> emit a ++  pushEax ++ emit b ++ divide
      
 ## Why? What's it all about?
 
