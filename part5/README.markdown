@@ -143,6 +143,10 @@ The last thing to get us back up to spec is to actually emit all the assembly ag
      
 ## Why? What's it all about?
 
+In case you missed it, there are no longer any calls to `expected`.  The Type system catches the errors during parsing. In the future we will be adding in a nicer error handler and message, but for now, we don't need one.
+
 We now have two phases to the compiler.  A parse phase and an emit phase.  By breaking the two up we allow a little more flexibility and options down the road.  For example, now that emit is not embedded in the parse phase, we can much more easily drop in a [Lexer](http://en.wikipedia.org/wiki/Lexical_analysis).
 
 The intermediate representation - `Expression` - is known as a [Parse Tree](http://en.wikipedia.org/wiki/Parse_tree) which we can then pass through optimisations or write an intepretor for as well as our compiler, or have multiple compilers if needed e.g. an ARM asm compiler.  
+
+So in the end, it's about flexibility.
