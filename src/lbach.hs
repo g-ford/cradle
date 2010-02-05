@@ -5,6 +5,7 @@ data Expression = Num Int
                 | Sub Expression Expression
                 | Mul Expression Expression
                 | Div Expression Expression
+                | Var Char
                 deriving (Show)
 
 -- Turns a string into an Expression 
@@ -19,6 +20,7 @@ parse (x:y:zs)
     | y == '-'  = Sub (parse [x]) (parse zs)
 parse (x:[])
     | isDigit x = Num (digitToInt x)
+    | isAlpha x = Var x
         
 -- Prefix a string with a tab
 emitSt s = "\t" ++ s
