@@ -43,9 +43,10 @@ parseAndEmit = emit . parse
 
 -- Basic math functions
 popEbx = emitLn "POP ebx"
+popEax = emitLn "POP eax"
 pushEax = emitLn "PUSH eax"
 add = popEbx ++ emitLn "ADD eax, ebx"
 sub = popEbx ++ emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
 mul = popEbx ++ emitLn "MUL ebx"
-divide = popEbx ++ emitLn "DIV ebx"
+divide = pushEax ++ popEbx ++ popEax ++ emitLn "DIV ebx"
     
