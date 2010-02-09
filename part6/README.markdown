@@ -60,4 +60,21 @@ And then we can modify `parse` to detect a single alpha character using `isAlpha
 
 And that's all we have to do to support simple variables in our parser.  Now we can parse statments like `1+a-3*c` and the corresponding `Expression` is `Sub (Add (Num 1) (Var 'a')) (Mul (Num 3) (Var 'c'))`. I don't know about you, but that was easier than I expected.
 
+Assignment, now unsurprisingly, is similarly two extra lines of code. Again, a new type constructor and a new pattern for the parser.
 
+Assignment is usually defined as:
+
+    <Assignment>::=<Ident>=<Expression>
+    
+And as usually we will limit ourselves to one character for identities, so our type constructor will use `Char`:
+
+    data Expression = Num Int
+                    | Add Expression Expression
+                    | Sub Expression Expression
+                    | Mul Expression Expression
+                    | Div Expression Expression
+                    | Var Char
+                    | Assign Char Expression
+                    deriving (Show)
+              
+And the `parse` pattern is 
