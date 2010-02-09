@@ -4,23 +4,37 @@ So far all the code generation has been pretty academic because we haven't been 
 
 ### Using NASM
 
-First of all make sure you have [NASM](http://www.nasm.us/) installed.  On Mac I used MacPorts to install 2.07.  I used the [2.07 Win32 installer](http://www.nasm.us/pub/nasm/releasebuilds/2.07/win32/) on windows.
+Actually getting this to work on OS X, Linux and Win32 taught me a lot more about assembly.  I had to actually understand the `div` instruction to get things working, and as such the `divide` function in the compiler had to be changed. 
+
+Now instead of simply pop and div in `divide`, we have to move the second operator into the right register before poping the stack to get them in the right order.  We then have to make sure `edx` is zero or, more precisely, promote the value of eax to 64 bits with the most significant bits in edx and the least significant bits in eax.  It just so happens that with our single digit limitation, the most significant 32 bits will always be 0, so we can just zero out the edx register.
+
+[Download lbahc-calc.hs]()
+
+First of all make sure you have [NASM](http://www.nasm.us/) installed.  On Mac I used MacPorts to install 2.07.  I used the [2.07 Win32 installer](http://www.nasm.us/pub/nasm/releasebuilds/2.07/win32/) on windows. 
+
+You will also need [gcc](http://gcc.gnu.org/). For OS X, gcc comes with XCode, and for Windows I used [MinGW](http://www.mingw.org/) 
 
 Download this [template ASM] and add your generated code where indicated.  You can the run the following commands to finish off the compilation and linking.
 
 OS X:
 
-    ~/Projects/asm> nasm -f macho calc_test.asm 
-    ~/Projects/asm> gcc -arch i386 -o calc_test calc_test
-    ~/Projects/asm> ./calc_test 
+    ~> nasm -f macho calc_test.asm 
+    ~> gcc -arch i386 -o calc_test calc_test
+    ~> ./calc_test 
     Result: 7
 
 Win:
 
+    ~> nasm -f win32 calc_test.asm 
+    ~> gcc -o calc_test calc_test
+    ~> ./calc_test 
+    Result: 7
+   
+Have a play with a few different sums and make sure the results are what you expect them to be.  Just remember that we are doing integer division, which means the result will always be rounded down e.g. 3/2 = 1.
 
-## Adding variables
+## Parsing variables and assignments
 
-We'll deviate from the Crenshaw script a bit and skip parenthese for now.  
+We'll deviate from the Crenshaw script a bit and skip parentheses for now.  
 
 So far our compiler can handle expressions with numbers, but thats of limited value.  So lets add some variables.  
 
