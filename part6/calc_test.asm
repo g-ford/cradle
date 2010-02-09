@@ -2,7 +2,6 @@ extern _printf
 
 section .data
     msg1	db	"Result: %i",0xa
-    a       db  0
     
 section	.text		; declaring our .text segment
 	global	_main 	; telling where program execution should start
@@ -12,8 +11,6 @@ _main: 		; this is where code starts getting exec'ed
 	mov     ebp,esp
 	
 	; add the calculation below here
-	mov dword [a], 12h
-	mov eax, [a]
     
     ; print the result
     PUSH eax
