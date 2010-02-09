@@ -48,5 +48,5 @@ pushEax = emitLn "PUSH eax"
 add = popEbx ++ emitLn "ADD eax, ebx"
 sub = popEbx ++ emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
 mul = popEbx ++ emitLn "MUL ebx"
-divide = pushEax ++ popEbx ++ popEax ++ emitLn "DIV ebx"
+divide = pushEax ++ popEbx ++ popEax ++ emitLn "MOV edx, 0" ++ emitLn "DIV ebx"
     
