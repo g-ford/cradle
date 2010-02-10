@@ -79,10 +79,12 @@ And as usually we will limit ourselves to one character for identities, so our t
               
 And the `parse` pattern is also pretty straight forward:
 
-	parse (x:'=':zs) = Assign x (parse zs)
-	parse (a:b:c:d:ds) ...
+    parse (x:'=':zs) 
+        | isAlpha x = Assign x (parse zs)
+        | otherwise = error "expected identifier"
+    parse (a:b:c:d:ds) ...
 	
-This allows us to parse not only simple assignments like `a=1` but also ones with complicated right hand sides such as `a=1+2*3` and even ones with other variables in it `a=1+b`:
+This allows us to parse not only simple assignments like `a=1` but also ones with complicated right hand sides such as `a=1+2*3` and even ones with other variables in it `a=1+b`. We have to check that we are assigning to an identifier, otherwise statements such as `3=2` would be parsed as legal.
 
 	*Main> parse "a=1"
 	Assign 'a' (Num 1)
@@ -92,3 +94,43 @@ This allows us to parse not only simple assignments like `a=1` but also ones wit
 	Assign 'a' (Add (Num 1) (Mul (Num 2) (Num 3)))
 	*Main> parse "a=1+b"
 	Assign 'a' (Add (Num 1) (Var 'b'))
+    *Main> parse "3=2"
+    *** Exception: expected identifier
+    
+## Emitting variables and assignments
+
+Variables and assignments in x86 is actually a two step process. You need to allocate or reserve some memory for them before they can be used.
+
+For example, a simple program for `c=a+b` where `a=1` and `b=2` would require us to allocate `a` and `b` and reserve space for `c`.  This would look like:
+
+    ; Note: this is not a complete program 
+    ; dd and resd are used for dword (32 bit) allocations
+    section .data
+        a	dd	1   ; a=1 
+        b   dd  2   ; b=2
+
+    section .bss
+        c   resd    ; reserve dword (32bits) for c
+
+    section .text
+        mov eax, [a]    ; put the value of a into eax
+        add eax, [b]    ; add eax and the value of b
+        mov [c], eax    ; c = eax
+
+As you can see we now have three sections to output to.  Data is for intialised variables, whilst bss is for uninitialized variables, which is all an assignment is.  And text is where the actual operations occur.
+
+To emit the actual assembly in the text section is pretty straight forward. We simple need to add two new case statements to the `emit` function:
+
+emit expr = case expr of 
+     Num a      -> emitLn ("MOV eax, " ++ (show a))
+     Add a b    -> emit a ++  pushEax ++ emit b ++ add
+     Sub a b    -> emit a ++  pushEax ++ emit b ++ sub
+     Mul a b    -> emit a ++  pushEax ++ emit b ++ mul
+     Div a b    -> emit a ++  pushEax ++ emit b ++ divide
+     Var a      -> emitLn ("MOV eax, [" ++ [a] ++ "]")
+     Assign a b -> emit b ++ emitLn ("MOV [" ++ [a] ++ "], eax")
+     
+You'll notice that the output for variables (`Var a`) and integers (`Num a`) is pactically the same, but instead of loading a literal integer into the register we load the value located at the label.
+
+Assignement simple loads whatever is in the `eax` register, after all the operations have occured, into the label.
+

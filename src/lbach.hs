@@ -11,7 +11,9 @@ data Expression = Num Int
 
 -- Turns a string into an Expression 
 parse :: String -> Expression
-parse (x:'=':zs) = Assign x (parse zs)
+parse (x:'=':zs) 
+    | isAlpha x = Assign x (parse zs)
+    | otherwise = error "expected identifier"
 parse (a:b:c:d:ds) 
     | d == '+'  = Add (parse [a,b,c]) (parse ds)
     | d == '-'  = Sub (parse [a,b,c]) (parse ds)
@@ -40,7 +42,7 @@ emit expr = case expr of
      Mul a b    -> emit a ++  pushEax ++ emit b ++ mul
      Div a b    -> emit a ++  pushEax ++ emit b ++ divide
      Var a      -> emitLn ("MOV eax, [" ++ [a] ++ "]")
-     Assign a b -> emit b ++ emitLn ("MOV dword [" ++ [a] ++ "], eax")
+     Assign a b -> emit b ++ emitLn ("MOV [" ++ [a] ++ "], eax")
 
 -- Shotcut to parse and emit with one call 
 parseAndEmit :: String -> String
@@ -49,7 +51,7 @@ parseAndEmit = emit . parse
 -- Basic math functions
 popEbx = emitLn "POP ebx"
 popEax = emitLn "POP eax"
-pushEax = emitLn "PUSH eax"
+pushEax = emitLn "PUSH eax"  
 add = popEbx ++ emitLn "ADD eax, ebx"
 sub = popEbx ++ emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
 mul = popEbx ++ emitLn "MUL ebx"
