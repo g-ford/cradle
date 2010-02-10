@@ -34,11 +34,13 @@ emitLn s = (emitSt s) ++ "\n"
 -- Turns an expression into the equvilent assembly
 emit :: Expression -> String
 emit expr = case expr of 
-     Num a   -> emitLn ("MOV eax, " ++ (show a))
-     Add a b -> emit a ++  pushEax ++ emit b ++ add
-     Sub a b -> emit a ++  pushEax ++ emit b ++ sub
-     Mul a b -> emit a ++  pushEax ++ emit b ++ mul
-     Div a b -> emit a ++  pushEax ++ emit b ++ divide
+     Num a      -> emitLn ("MOV eax, " ++ (show a))
+     Add a b    -> emit a ++  pushEax ++ emit b ++ add
+     Sub a b    -> emit a ++  pushEax ++ emit b ++ sub
+     Mul a b    -> emit a ++  pushEax ++ emit b ++ mul
+     Div a b    -> emit a ++  pushEax ++ emit b ++ divide
+     Var a      -> emitLn ("MOV eax, [" ++ [a] ++ "]")
+     Assign a b -> emit b ++ emitLn ("MOV dword [" ++ [a] ++ "], eax")
 
 -- Shotcut to parse and emit with one call 
 parseAndEmit :: String -> String
