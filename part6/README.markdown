@@ -4,7 +4,7 @@ So far all the code generation has been pretty academic because we haven't been 
 
 ### Using NASM
 
-Actually getting this to work on OS X, Linux and Win32 taught me a lot more about assembly.  I had to actually understand the `div` instruction to get things working, and as such the `divide` function in the compiler had to be changed. 
+Actually getting this to work on OS X and Win32 taught me a lot more about assembly.  I had to actually understand the `div` instruction to get things working, and as such the `divide` function in the compiler had to be changed. 
 
 Now instead of simply pop and div in `divide`, we have to move the second operator into the right register before poping the stack to get them in the right order.  We then have to make sure `edx` is zero or, more precisely, promote the value of eax to 64 bits with the most significant bits in edx and the least significant bits in eax.  It just so happens that with our single digit limitation, the most significant 32 bits will always be 0, so we can just zero out the edx register.
 
@@ -14,7 +14,7 @@ First of all make sure you have [NASM](http://www.nasm.us/) installed.  On Mac I
 
 You will also need [gcc](http://gcc.gnu.org/). For OS X, gcc comes with XCode, and for Windows I used [MinGW](http://www.mingw.org/) 
 
-Download this [template ASM] and add your generated code where indicated.  You can the run the following commands to finish off the compilation and linking.
+Download this [template ASM] and add your generated code where indicated.  You can then run the following commands to finish off the compilation and linking.
 
 OS X:
 
@@ -60,7 +60,7 @@ And then we can modify `parse` to detect a single alpha character using `isAlpha
 
 And that's all we have to do to support simple variables in our parser.  Now we can parse statments like `1+a-3*c` and the corresponding `Expression` is `Sub (Add (Num 1) (Var 'a')) (Mul (Num 3) (Var 'c'))`. I don't know about you, but that was easier than I expected.
 
-Assignment, now unsurprisingly, is similarly two extra lines of code. Again, a new type constructor and a new pattern for the parser.
+Assignment, unsurprisingly, is similarly two extra lines of code. Again, a new type constructor and a new pattern for the parser.
 
 Assignment is usually defined as:
 
@@ -77,4 +77,18 @@ And as usually we will limit ourselves to one character for identities, so our t
                     | Assign Char Expression
                     deriving (Show)
               
-And the `parse` pattern is 
+And the `parse` pattern is also pretty straight forward:
+
+	parse (x:'=':zs) = Assign x (parse zs)
+	parse (a:b:c:d:ds) ...
+	
+This allows us to parse not only simple assignments like `a=1` but also ones with complicated right hand sides such as `a=1+2*3` and even ones with other variables in it `a=1+b`:
+
+	*Main> parse "a=1"
+	Assign 'a' (Num 1)
+	*Main> parse "a=1"
+	Assign 'a' (Num 1)
+	*Main> parse "a=1+2*3"
+	Assign 'a' (Add (Num 1) (Mul (Num 2) (Num 3)))
+	*Main> parse "a=1+b"
+	Assign 'a' (Add (Num 1) (Var 'b'))

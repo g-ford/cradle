@@ -11,6 +11,7 @@ data Expression = Num Int
 
 -- Turns a string into an Expression 
 parse :: String -> Expression
+parse (x:'=':zs) = Assign x (parse zs)
 parse (a:b:c:d:ds) 
     | d == '+'  = Add (parse [a,b,c]) (parse ds)
     | d == '-'  = Sub (parse [a,b,c]) (parse ds)
@@ -19,7 +20,6 @@ parse (x:y:zs)
     | y == '/'  = Div (parse [x]) (parse zs)
     | y == '+'  = Add (parse [x]) (parse zs)
     | y == '-'  = Sub (parse [x]) (parse zs)
-    | y == '='  = Assign x (parse zs)
 parse (x:[])
     | isDigit x = Num (digitToInt x)
     | isAlpha x = Var x
