@@ -123,14 +123,14 @@ As you can see we now have three sections to output to.  Data is for intialised 
 
 To emit the assembly in the text section is pretty straight forward. We simple need to add two new case statements to the `emit` function:
 
-emit expr = case expr of 
-     Num a      -> emitLn ("MOV eax, " ++ (show a))
-     Add a b    -> emit a ++  pushEax ++ emit b ++ add
-     Sub a b    -> emit a ++  pushEax ++ emit b ++ sub
-     Mul a b    -> emit a ++  pushEax ++ emit b ++ mul
-     Div a b    -> emit a ++  pushEax ++ emit b ++ divide
-     Var a      -> emitLn ("MOV eax, [" ++ [a] ++ "]")
-     Assign a b -> emit b ++ emitLn ("MOV [" ++ [a] ++ "], eax")
+    emit expr = case expr of 
+         Num a      -> emitLn ("MOV eax, " ++ (show a))
+         Add a b    -> emit a ++  pushEax ++ emit b ++ add
+         Sub a b    -> emit a ++  pushEax ++ emit b ++ sub
+         Mul a b    -> emit a ++  pushEax ++ emit b ++ mul
+         Div a b    -> emit a ++  pushEax ++ emit b ++ divide
+         Var a      -> emitLn ("MOV eax, [" ++ [a] ++ "]")
+         Assign a b -> emit b ++ emitLn ("MOV [" ++ [a] ++ "], eax")
      
 You'll notice that the output for variables (`Var a`) and integers (`Num a`) is pactically the same, but instead of loading a literal integer into the register we load the value located at the label.
 
