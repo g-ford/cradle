@@ -1,3 +1,5 @@
+#Let's build a compiler (in Haskell): Part 6 - Variables and Assignements
+
 ## Testing the generated code
 
 So far all the code generation has been pretty academic because we haven't been able to actually run the code.  That won't change anytime soon, because I don't want to worry about IO and running other processes in Haskell just yet.  But here is how you can test what we have done so far, before we dive into some more complex stuff.
@@ -132,5 +134,81 @@ emit expr = case expr of
      
 You'll notice that the output for variables (`Var a`) and integers (`Num a`) is pactically the same, but instead of loading a literal integer into the register we load the value located at the label.
 
-Assignement simple loads whatever is in the `eax` register, after all the operations have occured, into the label.
+Assignment simple loads whatever is in the `eax` register, after all the operations have occured, into the label.
 
+## Outputing the sections
+
+To get all the sections to output correctly we need to define a function for each section that takes an `Epression` and produces the relevant lines for that section.
+
+We already have one for the text section, so we'll rename the exiting `emit` to `emitText`.
+
+For the data section, we are only intereted in `Var` expressions.  Unfortunately we have not yet allowed for our variables to have an initial value yet, so we will default everything to zero - this is a sensible default considereing we are only dealing with single digit integers.
+    
+    emitData :: Expression -> String
+    emitData expr = case expr of
+        Var a       -> emitLn ([a] ++ "\tdd\t0")
+        Add a b     -> emitData a ++ emitData b
+        Sub a b     -> emitData a ++ emitData b
+        Mul a b     -> emitData a ++ emitData b
+        Div a b     -> emitData a ++ emitData b
+        Assign a b  -> emitData b 
+        otherwise   -> ""
+
+As you can see the only one that actually creates output is `Var` and the rest just pass through.
+
+The bss section is pretty similar except this time we are only really interested in the first part of `Assign`.
+
+    -- Generates the contents of section .bss
+    emitBss ::: Expression -> String
+    emitBss expr = case expr of
+        Assign a b  -> emitLn ([a] ++ "\tresd") ++ emitBss b
+        Add a b     -> emitBss a ++ emitBss b
+        Sub a b     -> emitBss a ++ emitBss b
+        Mul a b     -> emitBss a ++ emitBss b
+        Div a b     -> emitBss a ++ emitBss b
+        otherwise   -> ""
+
+And then we can tie it all together with a new `emit` function.  This will create the section labels and then hand off to the relevant emit function for that section.
+
+    -- Turns an expression into the equvilent assembly
+    emit :: Expression -> String
+    emit expr= "section .data\n" ++ emitData expr 
+                ++ "section .bss\n" ++ emitBss expr 
+                ++ "section .text\n" ++emitText expr
+
+And a play in `ghci` shows that we can now generate the three sections for both general expressions and assignments.
+
+    *Main> putStr $ parseAndEmit "a=1+b"
+    section .data
+            b       dd      0
+    section .bss
+            a       resd
+    section .text
+            MOV eax, 1
+            PUSH eax
+            MOV eax, [b]
+            POP ebx
+            ADD eax, ebx
+            MOV [a], eax
+    *Main> putStr $ parseAndEmit "1+2*3+a"
+    section .data
+            a       dd      0
+    section .bss
+    section .text
+            MOV eax, 1
+            PUSH eax
+            MOV eax, 2
+            PUSH eax
+            MOV eax, 3
+            POP ebx
+            MUL ebx
+            PUSH eax
+            MOV eax, [a]
+            POP ebx
+            ADD eax, ebx
+            POP ebx
+            ADD eax, ebx
+            
+I should note that this output, as it stands, wont actually assemble as we haven't defined an entry point or taken care of setting up and taking down the stack frame.  But you can take the output for each section and plug it into the relevant parts in `calc_test.asm`.  
+
+[Download lbach-assign.hs']()

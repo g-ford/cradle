@@ -16,7 +16,7 @@ _main: 		; this is where code starts getting exec'ed
     PUSH eax
     PUSH dword msg1
     call _printf
-	add esp, byte 8 ; clear the params off the stack
+	add esp, 8 ; clear the params off the stack
 	
 	mov	eax,0		;  normal, no error, return value
 	leave
