@@ -10,13 +10,13 @@ Actually getting this to work on OS X and Win32 taught me a lot more about assem
 
 Now instead of simply pop and div in `divide`, we have to move the second operator into the right register before poping the stack to get them in the right order.  We then have to make sure `edx` is zero or, more precisely, promote the value of eax to 64 bits with the most significant bits in edx and the least significant bits in eax.  It just so happens that with our single digit limitation, the most significant 32 bits will always be 0, so we can just zero out the edx register.
 
-[Download lbahc-calc.hs]()
+[Download lbahc-calc.hs](http://github.com/alephnullplex/cradle/blob/master/part6/calc_test.asm)
 
 First of all make sure you have [NASM](http://www.nasm.us/) installed.  On Mac I used MacPorts to install 2.07.  I used the [2.07 Win32 installer](http://www.nasm.us/pub/nasm/releasebuilds/2.07/win32/) on windows. 
 
 You will also need [gcc](http://gcc.gnu.org/). For OS X, gcc comes with XCode, and for Windows I used [MinGW](http://www.mingw.org/) 
 
-Download this [template ASM] and add your generated code where indicated.  You can then run the following commands to finish off the compilation and linking.
+Download this [template ASM](http://github.com/alephnullplex/cradle/blob/master/part6/calc_test.asm) and add your generated code where indicated.  You can then run the following commands to finish off the compilation and linking.
 
 OS X:
 
@@ -121,7 +121,7 @@ For example, a simple program for `c=a+b` where `a=1` and `b=2` would require us
 
 As you can see we now have three sections to output to.  Data is for intialised variables, whilst bss is for uninitialized variables, which is all an assignment is.  And text is where the actual operations occur.
 
-To emit the actual assembly in the text section is pretty straight forward. We simple need to add two new case statements to the `emit` function:
+To emit the assembly in the text section is pretty straight forward. We simple need to add two new case statements to the `emit` function:
 
 emit expr = case expr of 
      Num a      -> emitLn ("MOV eax, " ++ (show a))
@@ -138,12 +138,13 @@ Assignment simple loads whatever is in the `eax` register, after all the operati
 
 ## Outputing the sections
 
-To get all the sections to output correctly we need to define a function for each section that takes an `Epression` and produces the relevant lines for that section.
+To get all the sections to output correctly we need to define a function for each section that takes an `Expression` and produces the relevant lines for that section.
 
 We already have one for the text section, so we'll rename the exiting `emit` to `emitText`.
 
-For the data section, we are only intereted in `Var` expressions.  Unfortunately we have not yet allowed for our variables to have an initial value yet, so we will default everything to zero - this is a sensible default considereing we are only dealing with single digit integers.
+For the data section, we are only intereted in `Var` expressions.  Unfortunately we have not yet allowed for our variables to have an initial value yet, so we will default everything to zero - this is a sensible default considering we are only dealing with single digit integers.
     
+    -- Generates the contents of section .data
     emitData :: Expression -> String
     emitData expr = case expr of
         Var a       -> emitLn ([a] ++ "\tdd\t0")
@@ -211,4 +212,4 @@ And a play in `ghci` shows that we can now generate the three sections for both 
             
 I should note that this output, as it stands, wont actually assemble as we haven't defined an entry point or taken care of setting up and taking down the stack frame.  But you can take the output for each section and plug it into the relevant parts in `calc_test.asm`.  
 
-[Download lbach-assign.hs']()
+[Download lbach-assign.hs'](http://github.com/alephnullplex/cradle/blob/master/part6/lbach-assign.hs)
