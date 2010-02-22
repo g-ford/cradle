@@ -14,6 +14,12 @@ data Expression = Num Int
 
 type Parser a = String -> Maybe (a, String)
 
+
+
+-- Basic parsers (Building Blocks)
+ident :: Parser String
+ident = token (letter # iter alphanum >>> cons)
+
 char :: Parser Char
 char [] = Nothing
 char (c:cs) = Just (c, cs)
@@ -42,13 +48,20 @@ return a cs = Just(a,cs)
 fail :: Parser a
 fail _ = Nothing
 
-iter :: Parser a -> Parser [a]
-iter m = m # iter m >>> cons 
-        <|> Main.return []
+token :: Parser a -> Parser a
+token = (#- iter space)
 
 cons :: (a, [a]) -> [a]
 cons (hd, tl) = hd:tl
-    
+
+-- Parser combinators (Operations)   
+iterate :: Parser a -> Int -> Parser [a]
+iterate m 0 = Main.return []
+iterate m x = m # Main.iterate m (x-1) >>> cons
+
+iter :: Parser a -> Parser [a]
+iter m = m # iter m >>> cons 
+        <|> Main.return []
         
 infixl 3 <|>
 (<|>) :: Parser a -> Parser a -> Parser a 
