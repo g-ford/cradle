@@ -151,7 +151,7 @@ This is clearer as we can see that we are getting `id` and `expr` from an `assig
     assign :: Parser ((Char, Char), Char)
     assign = letter <+> literal '=' <+> digit 
 
-Now that reads almost exactly like the definition of assignment. The combinator `<+>` is a left associative sequence operator.  This will only apply the second parser if the first is succesfull, and will return the two successes combined in a pair.  Multiple applications of `<+>` will create nested pairs.
+Now that reads almost exactly like the definition of assignment. The combinator `<+>` is a left associative sequence operator.  This will only apply the second parser if the first is succesful and will return the two successes combined in a pair.  Multiple applications of `<+>` will create nested pairs.
 
     -- Sequence operator that pairs up two parsers
     infixl 6 <+>
@@ -162,3 +162,36 @@ Now that reads almost exactly like the definition of assignment. The combinator 
             Nothing -> Nothing
             Just (b, cs2) -> Just((a, b), cs2)
 
+Great, but that extra '=' in the result of `assign` which just gets thrown away all the time is annoying me.  It makes more sense for `assign` to have the type `Parser (Char, Char)` so that it returns results in the form `(a,1)`.
+
+    parse :: String -> Assign
+    parse s = Assign id expr
+        where (id, expr) = case assign s of 
+                Nothing -> error "Invalid assignment"
+                Just ((a, b), _) -> (a, (Num (read [b])))
+                       
+    assign = letter <+-> literal '=' <+> digit  
+    
+We've refactored the result format into `parse`, and the new combinator `<+->` has been introduced into `assign`.  This combinator has the exact same semantics as `<+>` only it discards the second result.
+
+    -- Sequence operator that discards the second result 
+    infixl 6 <+-> 
+    (<+-> ) :: Parser a -> Parser b -> Parser a
+    (m <+->  n) cs = case m cs of
+        Nothing -> Nothing
+        Just (a, cs') -> case n cs' of
+            Nothing -> Nothing
+            Just (b, cs2) -> Just(a, cs2)
+
+And just for completeness, one that discards the first result and keeps only the second.
+ 
+    -- Sequence operator that discards the first result       
+    infixl 6 <-+> 
+    (<-+> ) :: Parser a -> Parser b -> Parser b
+    (m <-+>  n) cs = case m cs of
+        Nothing -> Nothing
+        Just (a, cs') -> case n cs' of
+            Nothing -> Nothing
+            Just (b, cs2) -> Just(b, cs2) 
+            
+We now have a compiler that, while a bit longer than the previous attempt, is much simpler to read and definately far simpler to extend.  In the next article we will look at the parsing of expressions as well as start structuring our compiler into modules and seperate files. We'll also make use of that `space` recogniser.
