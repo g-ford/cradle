@@ -8,13 +8,13 @@ In this article we will rewrite out compiler using a technique that has been use
 
 ## Parser Combinators 
 
-First of all, we need to define what a *parser* is:
+First of all, we need to define what a **parser** is:
 
 > [parse](http://dictionary.reference.com/browse/parser) - 3. Computers. to analyze (a string of characters) in order to associate groups of characters with the syntactic units of the underlyinggrammar. - [Dictionary.com](http://dictionary.com)
 
 And naturally a parser is something that performs a parse operation.  
 
-A *combinator* is the "...use of a [Higher Order Function] as an infix operator in a function-definition..."([Parser Combinator - Wikipedia](http://en.wikipedia.org/wiki/Parser_combinator))
+A **combinator** is the "...use of a [Higher Order Function] as an infix operator in a function-definition..."([Parser Combinator - Wikipedia](http://en.wikipedia.org/wiki/Parser_combinator))
 
 Practically speaking, the technique means that we write small _parser_ functions that do one little thing, such as detect only digits, and return the result and the remainder of the input.
 
@@ -33,7 +33,7 @@ Given the input `a2 the rest of the input` the general flow is (the specific imp
 5. `digit` returns the pair `(2, "the rest of the input")`
 6. Now that `<+>` has a result for both sides, it bundles the two success up into a pair and pairs that with the remaining input giving `(('a',2), "the rest of the input")`
 
-If we were to try and write `identity` using our previous technique, it would be far more cumbersome and much harder read the intent of the code.  As you can see, using combinators is a powerful and clean technique that makes the intent far more readable.
+If we were to try and write `identity` using our previous technique, it would be far more cumbersome and much harder to read the intent of the code.  As you can see, using combinators is a powerful and clean technique that makes the intent far more readable.
 
 ## Starting again (again)
 
@@ -195,3 +195,5 @@ And just for completeness, one that discards the first result and keeps only the
             Just (b, cs2) -> Just(b, cs2) 
             
 We now have a compiler that, while a bit longer than the previous attempt, is much simpler to read and definately far simpler to extend.  In the next article we will look at the parsing of expressions as well as start structuring our compiler into modules and seperate files. We'll also make use of that `space` recogniser.
+
+[Download lbach.hs](http://github.com/alephnullplex/cradle/blob/master/part7/lbach.hs)
