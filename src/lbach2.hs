@@ -8,7 +8,7 @@ data Expression = Num Int
                 | Sub Expression Expression
                 | Mul Expression Expression
                 | Div Expression Expression
-                | Var Char
+                | Var String
                 deriving (Show)
                 
 data Assign = Assign Char Expression
@@ -22,10 +22,43 @@ assign :: String -> Assign
 assign s = Assign id expr
     where (id, expr) = case assign' s of 
             Nothing -> error "Invalid assignment"
-            Just ((a, b), _) -> (a, (Num (read [b])))
+            Just ((a, b), _) -> (a, b)
                    
-assign' = letter <+-> literal '=' <+> digit
+assign' = token letter <+-> token (literal '=') <+> expr
 
+-- Expression parsers
+mulOp = token (literal '*') >>> (\_ -> Mul)
+	<|> token (literal '/') >>> (\_ -> Div)
+
+addOp = token (literal '+') >>> (\_ -> Add)
+	<|> token (literal '-') >>> (\_ -> Sub)
+
+var :: Parser Expression
+var = token (letters >>> Var)
+
+num :: Parser Expression
+num = token (integer >>> Num)
+
+factor :: Parser Expression
+factor = num
+     <|> literal '(' <-+> expr <+-> literal ')'
+	 <|> var
+
+term :: Parser Expression
+term = factor +> term'
+	 
+term' e = mulOp <+> factor >>> buildOp e +> term'
+      <|> Main.return e
+		 
+expr :: Parser Expression
+expr = term +> expr'
+
+expr' :: Expression -> Parser Expression
+expr' e = addOp <+> term >>> buildOp e +> expr'
+      <|> Main.return e
+		 
+buildOp expr (op, expr') = op expr expr'
+	 
 -- Basic parsers (Building Blocks)
 ident :: Parser String
 ident = token (letter <+> iter alphanum >>> cons)
@@ -37,6 +70,9 @@ char (c:cs) = Just (c, cs)
 digit :: Parser Char
 digit = char <=> isDigit
 
+digitVal :: Parser Int
+digitVal = digit >>> digitToInt
+
 space :: Parser Char
 space = char <=> isSpace    
 
@@ -44,7 +80,7 @@ letter :: Parser Char
 letter = char <=> isAlpha
 
 letters :: Parser String
-letters = iter letter
+letters = iter letter 
 
 alphanum :: Parser Char
 alphanum = digit <|> letter
@@ -59,10 +95,21 @@ fail :: Parser a
 fail _ = Nothing
 
 token :: Parser a -> Parser a
-token = (<+->  iter space)
+token = (<+-> iter space)
 
 cons :: (a, [a]) -> [a]
 cons (hd, tl) = hd:tl
+
+integer :: Parser Int
+integer = digitVal +> integer'
+
+integer' :: Int -> Parser Int
+integer' n = digitVal >>> buildNumber n +> integer'
+         <|> Main.return n
+
+buildNumber :: Int -> Int -> Int
+buildNumber n d = 10 * n + d
+
 
 -- Parser combinators (Operations)   
 iterate :: Parser a -> Int -> Parser [a]
@@ -79,6 +126,12 @@ infixl 3 <|>
 (m <|> n) cs = case m cs of 
     Nothing -> n cs 
     mcs -> mcs
+
+infix 4 +>
+(+>) :: Parser a -> (a -> Parser b) -> Parser b
+(m +> k) cs = case m cs of
+	Nothing -> Nothing
+	Just (a, cs') -> k a cs'
     
 infixl 5 >>>
 (>>>) :: Parser a -> (a -> b) -> Parser b
