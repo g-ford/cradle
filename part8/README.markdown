@@ -213,5 +213,7 @@ If you also add `token` to `mulOp` and `addOp` you can now do even more amazing 
 	*Main> parse "longName=value + 1324 * (15+green)"
 	Assign "longName" (Add (Var "value") (Mul (Num 1324) (Add (Num 15) (Var "green"))))
 	
+[Download lbach.hs](http://github.com/alephnullplex/cradle/blob/master/part8/lbach.hs)
+	
 ## Next
 I know I mentioned in the last article that I would restucture our compiler into modules, but this installment is already pretty long with a lot of new things in it.  Program organisation is not a small dicussion so I will leave it for next time.
