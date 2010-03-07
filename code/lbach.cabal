@@ -1,0 +1,13 @@
+Name:                lbach
+Version:             0.1
+Description:         Toy compiler
+License:             MIT
+License-file:        LICENSE
+Author:              Geoff Ford
+Maintainer:          g_ford@hotmail.com
+Build-Type:          Simple
+Cabal-Version:       >=1.2
+Executable lbach
+  Main-is:           Lbach.hs
+  Build-Depends:     base >= 3,haskell98
+  hs-source-dirs:    src
