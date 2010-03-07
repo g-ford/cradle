@@ -1,4 +1,4 @@
-Packageing a Haskell Program
+Packaging a Haskell Program
 
 The preferred method for creating distributable Haskell packages, whether they are libraries or programs, is with [the Cabal](http://www.haskell.org/cabal/). The Cabal is a small wrapper around the build tools, and allows some standardised dependancy management, license distribution etc.
 
@@ -59,9 +59,11 @@ Awesome.  Now let's test if `cabal` can package it up and install it for us.  We
     
 ## Modularisation
 
-To keep our program source files from running to unmanageable lengths we will need to break them up into separate files.  This is also a good time to think about how we are going to split the compiler up into modules.
+To keep our program source files from running to unmanageable lengths we will need to break them up into separate files.  This is also a good time to think about how we are going to split the compiler up into modules.  
 
-We immediately know that there are three basic modules - the Parser, the Emitter and the Grammar.  I have also separated the expression parsers from the general parsers.  I'll also prefix everything with an Lbach namespace so as not to get in the way of any existing namespaces. This gives the following file structure.
+We immediately know that there are three basic modules - the Parser, the Emitter and the Grammar.  I have also separated the expression parsers from the general parsers.  I'll also prefix everything with an Lbach namespace so as not to get in the way of any existing namespaces. 
+
+With Haskell, modules are expected to be in files and folders that reflect their name.  For example the module `My.Great.Module` should be in the file `My/Great/Module.hs`. This gives the following file structure.
 
     src
       |- Lbach.hs
