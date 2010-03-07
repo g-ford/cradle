@@ -2,6 +2,11 @@ module Lbach.Parser.Expressions
 where
 
 import Lbach.Parser
+import Lbach.Grammar.Basics
+
+-- |A parser that identifies assigment statments.
+assign :: Parser (String, Expression)                   
+assign = letters <+-> literal '=' <+> expr
 
 -- |A parser to detect a factor, the basic token of an expression
 factor :: Parser Expression
