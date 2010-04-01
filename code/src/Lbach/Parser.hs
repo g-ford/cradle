@@ -2,9 +2,26 @@ module Lbach.Parser
 where
 
 import Char
+import Lbach.Grammar.Basics
 
 -- |A general parser type
-type Parser a = String -> Maybe (a, String)
+type Parser a = String -> Maybe (a, String) 
+
+program :: Parser Program
+program = block <+-> literal 'e' >>> Program
+
+block :: Parser Block
+block = ifthen <|> other 
+
+other = token letters >>> Block
+
+ifthen :: Parser Block
+ifthen = token (literal 'i') <-+> condition +> ifthen'
+	where ifthen' cond = block <+-> token (literal 'e') +> (buildBranch cond)
+		where buildBranch cond bl = result $ Branch cond bl
+
+condition :: Parser Condition
+condition = token letters >>> Condition
 
 -- General Parsers
 char :: Parser Char
