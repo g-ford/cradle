@@ -1,7 +1,7 @@
 module Lbach.Parser.Expressions
 where
 
-import Lbach.Parser
+import Lbach.Parser.Core
 import Lbach.Grammar.Basics
 
 

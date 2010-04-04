@@ -1,122 +1,37 @@
 module Lbach.Parser
 where
 
-import Char
 import Lbach.Grammar.Basics
-
--- |A general parser type
-type Parser a = String -> Maybe (a, String) 
+import Lbach.Parser.Core
 
 program :: Parser Program
 program = block <+-> literal 'e' >>> Program
 
+blocks = iter block
+
 block :: Parser Block
-block = ifthen <|> other 
+block =  ifelse <|> ifthen2 <|> other    
 
-other = token letters >>> Block
+other :: Parser Block
+other = token letters' >>> Block
 
-ifthen :: Parser Block
-ifthen = token (literal 'i') <-+> condition +> ifthen'
-	where ifthen' cond = block <+-> token (literal 'e') +> (buildBranch cond)
-		where buildBranch cond bl = result $ Branch cond bl
+ifthen :: Parser Block		
+ifthen = token (literal 'i') <-+> condition <+> block <+-> token (literal 'e') +>> Branch
+
+ifthen2 :: Parser Block		
+ifthen2 = accept "if" <-+> condition <+> block <+-> accept "end" +>> Branch 
+
+-- ifelse :: Parser Block		
+ifelse = accept "if" <-+> condition <+> block <+-> accept "else" <+> block <+-> accept "end" >>> br
+    where br ((c, b1), b2) = Branch2 c b1 b2
+
 
 condition :: Parser Condition
-condition = token letters >>> Condition
+condition = token letters' >>> Condition
 
--- General Parsers
-char :: Parser Char
-char [] = Nothing
-char (c:cs) = Just (c, cs)
+accept :: String -> Parser String
+accept w = token (letters <=> (==w))
 
-digit :: Parser Char
-digit = char <=> isDigit
+err :: String -> Parser a
+err m cs = error (m ++ " near " ++ cs) 
 
-digitVal :: Parser Int
-digitVal = digit >>> digitToInt
-
-space :: Parser Char
-space = char <=> isSpace    
-
-letter :: Parser Char
-letter = char <=> isAlpha
-
-letters :: Parser String
-letters = iter letter
-
-alphanum :: Parser Char
-alphanum = digit <|> letter
-
-literal :: Char -> Parser Char
-literal c = char <=> (==c)
-
-result :: a -> Parser a
-result a cs = Just(a,cs)
-
-iter :: Parser a -> Parser [a]
-iter m = m <+> iter m >>> cons 
-        <|> result []
-		
-cons :: (a, [a]) -> [a]
-cons (hd, tl) = hd:tl
-
-token :: Parser a -> Parser a
-token = (<+-> iter space)
-
-
-
--- Combine two parsers using a 'or' type operation        
-infixl 3 <|>
-(<|>) :: Parser a -> Parser a -> Parser a 
-(m <|> n) cs = case m cs of 
-    Nothing -> n cs 
-    mcs -> mcs
-
--- Extract a parsers result	
-infix 4 +>
-(+>) :: Parser a -> (a -> Parser b) -> Parser b
-(m +> k) cs = case m cs of
-	Nothing -> Nothing
-	Just (a, cs') -> k a cs'
-
--- Transform a parsers result	
-infixl 5 >>>
-(>>>) :: Parser a -> (a -> b) -> Parser b
-(m >>> n) cs = case m cs of
-	Nothing -> Nothing
-	Just (a, cs') -> Just (n a, cs')
-
--- Sequence operator that pairs up two parsers
-infixl 6 <+>
-(<+>) :: Parser a -> Parser b -> Parser (a, b)
-(m <+> n) cs = case m cs of
-    Nothing -> Nothing
-    Just (a, cs') -> case n cs' of
-        Nothing -> Nothing
-        Just (b, cs2) -> Just((a, b), cs2) 
-
--- Sequence operator that discards the first result       
-infixl 6 <-+> 
-(<-+> ) :: Parser a -> Parser b -> Parser b
-(m <-+>  n) cs = case m cs of
-    Nothing -> Nothing
-    Just (a, cs') -> case n cs' of
-        Nothing -> Nothing
-        Just (b, cs2) -> Just(b, cs2) 
-
--- Sequence operator that discards the second result         
-infixl 6 <+-> 
-(<+-> ) :: Parser a -> Parser b -> Parser a
-(m <+->  n) cs = case m cs of
-    Nothing -> Nothing
-    Just (a, cs') -> case n cs' of
-        Nothing -> Nothing
-        Just (b, cs2) -> Just(a, cs2) 
-
--- Given a parser and a predicate, return the result of the parser only if
--- it also satisfies the predicate.    
-infix 7 <=> 
-(<=>) :: Parser a -> (a -> Bool) -> Parser a 
-(m <=> p) cs =
-    case m cs of 
-        Nothing     -> Nothing 
-        Just(a,cs)  -> if p a then Just(a,cs) else Nothing
