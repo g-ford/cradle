@@ -1,10 +1,20 @@
-module Lbach.Parser 
-    (module Lbach.Parser.Expressions, module Lbach.Parser.Core, other, program)
+module Lbach.Parser
 where
 
 import Lbach.Grammar.Basics
 import Lbach.Parser.Core
 import Lbach.Parser.Expressions
+
+-- |Attempts to parse the string as an assignment
+parse2 :: String -> Assign
+parse2 s = Assign id expr
+    where (id, expr) = case assign s of 
+            Nothing -> error "Invalid assignment"
+            Just ((a, b), _) -> (a, b)
+
+parse s = case program s of
+    Nothing -> error "No Block"
+    Just (a, _) -> a
 
 program :: Parser Program
 program = block <+-> accept "end" >>> Program
@@ -13,13 +23,13 @@ block :: Parser Block
 block = iter statement
 
 statement :: Parser Statement
-statement =  ifelse <|> ifthen <|> other    
+statement =  ifelse <|> ifthen <|> other
 
 other :: Parser Statement
 other = (token letters') <=> (/="end") >>> Statement
 
 ifthen :: Parser Statement		
-ifthen = accept "if" <-+> condition <+> block <+-> accept "end" +>> Branch 
+ifthen = accept "if" <-+> condition <+> block <+-> accept "end" +>> Branch
 
 ifelse :: Parser Statement		
 ifelse = accept "if" <-+> condition <+> block <+-> accept "else" <+> block <+-> accept "end" >>> br

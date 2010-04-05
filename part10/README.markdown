@@ -29,6 +29,8 @@ Because multi-character keywords are pretty simple using our techniques, we will
 
 With these parsers you can write really cool programs like `something end`.  Don't worry, it gets more exciting.
 
+Our emitter must now take a 
+
 ## If Then
 
 The first control structure we will look at is the basic if statement.  This takes a condition, and if the condition is true, it will execute the body of the if statment.
