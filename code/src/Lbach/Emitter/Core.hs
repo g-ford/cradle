@@ -6,7 +6,10 @@ emitSt s = "\t" ++ s
 -- Prefix a string with a tab and postfix it with a new line
 emitLn s = (emitSt s) ++ "\n"
 
-emitLbl s = s ++ ":\n"
+getLbl :: Int -> (String, Int)
+getLbl count = ("L" ++ (show count), count + 1)
+
+emitLbl lbl = lbl ++ ":\n"
  
 -- Basic math functions
 popEbx = emitLn "POP ebx"

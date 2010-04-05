@@ -7,7 +7,7 @@ import Lbach.Emitter.Expressions
 import Lbach.Emitter.Control
 
 emit :: Program -> String
-emit (Program b) = emitBlock b
+emit (Program b) = emitBlock b ++ emitLn "ret"
 
 -- Turns an expression into the equvilent assembly
 emit2 :: Assign -> String
