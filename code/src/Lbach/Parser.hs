@@ -1,8 +1,11 @@
-module Lbach.Parser
+module Lbach.Parser 
+    (module Lbach.Parser.Expressions 
+    ,blocks)
 where
 
 import Lbach.Grammar.Basics
 import Lbach.Parser.Core
+import Lbach.Parser.Expressions
 
 program :: Parser Program
 program = block <+-> literal 'e' >>> Program

@@ -3,7 +3,6 @@ where
 
 import System.Environment
 import Lbach.Parser
-import Lbach.Parser.Expressions
 import Lbach.Grammar.Basics
 import Lbach.Emitter
 
