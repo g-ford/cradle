@@ -1,6 +1,5 @@
 module Lbach.Parser 
-    (module Lbach.Parser.Expressions 
-    ,blocks)
+    (module Lbach.Parser.Expressions, module Lbach.Parser.Core, other, program)
 where
 
 import Lbach.Grammar.Basics
@@ -8,33 +7,25 @@ import Lbach.Parser.Core
 import Lbach.Parser.Expressions
 
 program :: Parser Program
-program = block <+-> literal 'e' >>> Program
-
-blocks = iter block
+program = block <+-> accept "end" >>> Program
 
 block :: Parser Block
-block =  ifelse <|> ifthen2 <|> other    
+block = iter statement
 
-other :: Parser Block
-other = token letters' >>> Block
+statement :: Parser Statement
+statement =  ifelse <|> ifthen <|> other    
 
-ifthen :: Parser Block		
-ifthen = token (literal 'i') <-+> condition <+> block <+-> token (literal 'e') +>> Branch
+other :: Parser Statement
+other = (token letters') <=> (/="end") >>> Statement
 
-ifthen2 :: Parser Block		
-ifthen2 = accept "if" <-+> condition <+> block <+-> accept "end" +>> Branch 
+ifthen :: Parser Statement		
+ifthen = accept "if" <-+> condition <+> block <+-> accept "end" +>> Branch 
 
--- ifelse :: Parser Block		
+ifelse :: Parser Statement		
 ifelse = accept "if" <-+> condition <+> block <+-> accept "else" <+> block <+-> accept "end" >>> br
     where br ((c, b1), b2) = Branch2 c b1 b2
 
 
 condition :: Parser Condition
 condition = token letters' >>> Condition
-
-accept :: String -> Parser String
-accept w = token (letters <=> (==w))
-
-err :: String -> Parser a
-err m cs = error (m ++ " near " ++ cs) 
 

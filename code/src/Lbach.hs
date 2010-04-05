@@ -15,6 +15,10 @@ parse s = Assign id expr
     where (id, expr) = case assign s of 
             Nothing -> error "Invalid assignment"
             Just ((a, b), _) -> (a, b)
+            
+parseP s = case program s of
+    Nothing -> error "No Block"
+    Just (a, _) -> a
 
 
 -- Shotcut to parse and emit with one call 

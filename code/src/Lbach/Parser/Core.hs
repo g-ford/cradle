@@ -54,7 +54,11 @@ token = (<+-> iter space)
 failed :: Parser a
 failed cs = Nothing
 
+accept :: String -> Parser String
+accept w = token (letters <=> (==w))
 
+err :: String -> Parser a
+err m cs = error (m ++ " near " ++ cs) 
 
 -- Combine two parsers using a 'or' type operation        
 infixl 3 <|>

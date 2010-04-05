@@ -3,10 +3,12 @@ where
 
 data Program = Program Block deriving (Show)
 
-data Block = Block String 
-		   | Branch Condition Block
-		   | Branch2 Condition Block Block
-		   deriving (Show)
+type Block = [Statement] 
+
+data Statement = Statement String 
+		      | Branch Condition Block
+		      | Branch2 Condition Block Block
+		      deriving (Show)
 
 data Condition = Condition String deriving (Show)
 

@@ -5,6 +5,8 @@ emitSt s = "\t" ++ s
  
 -- Prefix a string with a tab and postfix it with a new line
 emitLn s = (emitSt s) ++ "\n"
+
+emitLbl s = s ++ ":\n"
  
 -- Basic math functions
 popEbx = emitLn "POP ebx"
