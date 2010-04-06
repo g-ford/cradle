@@ -9,6 +9,7 @@ emitLn s = (emitSt s) ++ "\n"
 getLbl :: Int -> (String, Int)
 getLbl count = ("L" ++ (show count), count + 1)
 
+emitLbl :: String -> String
 emitLbl lbl = lbl ++ ":\n"
  
 -- Basic math functions

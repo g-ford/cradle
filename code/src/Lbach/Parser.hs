@@ -13,7 +13,7 @@ parse2 s = Assign id expr
             Just ((a, b), _) -> (a, b)
 
 parse s = case program s of
-    Nothing -> error "No Block"
+    Nothing -> error "Invalid program"
     Just (a, _) -> a
 
 program :: Parser Program
