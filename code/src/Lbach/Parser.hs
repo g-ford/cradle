@@ -25,8 +25,10 @@ block = iter statement
 statement :: Parser Statement
 statement =  ifelse <|> ifthen <|> other
 
+keywords = ["if", "else", "end"]
+
 other :: Parser Statement
-other = (token letters') <=> (/="end") >>> Statement
+other = (token letters') <=> (\x -> not $ any (==x) keywords) >>> Statement
 
 ifthen :: Parser Statement		
 ifthen = accept "if" <-+> condition <+> block <+-> accept "end" +>> Branch
