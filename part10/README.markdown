@@ -257,7 +257,7 @@ Once again, the lable counter threading is tedious, but other than that the func
               
 ## Conclusions
 
-For those that haven't been following along, you can get all the code from github. Let's try some complicated samples.
+For those that haven't been following along, you can [get all the code from github](http://github.com/alephnullplex/cradle/blob/master/part10/Lbach.zip). Let's try some complicated samples.
 
     C:\cradle\code\src>runhaskell Lbach.hs "while a if b c else d end e end f end"
     L1:
@@ -299,4 +299,4 @@ For those that haven't been following along, you can get all the code from githu
     L1:
             ret
     
-Apparently, with only and if and a while statement, what we have is capable of producing almost any program.  But in the next article we will be creating a few more control structures such as for loops and a break statement.
+Apparently, with only and if and a while statement, what we have is capable of producing almost any program.  I wouldn't like to test that theory though. In the next article we will be creating a few more control structures such as for loops and a break statement.
