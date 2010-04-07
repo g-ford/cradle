@@ -33,6 +33,15 @@ emitStatement s (Branch2 cond b1 b2) = (s', c ++ jmpElse ++ block1 ++ jmpEnd ++ 
           end           = emitLbl lblEnd
           (lblElse, s2) = getLbl s1
           (lblEnd, s3)  = getLbl s2
+emitStatement s (While c b) = (s', start ++ cond ++ jmp ++ block ++ loop ++ end)
+    where start = emitLbl startLbl
+          (s1, cond) = emitCondition s c
+          jmp = emitLn ("je " ++ endLbl)
+          (s', block) = emitBlock' s3 b
+          loop = emitLn ("jmp " ++ startLbl)
+          end = emitLbl endLbl
+          (endLbl, s2) = getLbl s1
+          (startLbl, s3) = getLbl s2
 emitStatement s (Statement b) = (s, emitLn ("<block> " ++ b))
     
 emitCondition s (Condition c) = (s, emitLn ("<condition> " ++ c))

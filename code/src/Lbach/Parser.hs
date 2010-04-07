@@ -23,9 +23,9 @@ block :: Parser Block
 block = iter statement
 
 statement :: Parser Statement
-statement =  ifelse <|> ifthen <|> other
+statement =  while <|> ifelse <|> ifthen <|> other
 
-keywords = ["if", "else", "end"]
+keywords = ["if", "else", "end", "while"]
 
 other :: Parser Statement
 other = (token letters') <=> (\x -> not $ any (==x) keywords) >>> Statement
@@ -37,6 +37,8 @@ ifelse :: Parser Statement
 ifelse = accept "if" <-+> condition <+> block <+-> accept "else" <+> block <+-> accept "end" >>> br
     where br ((c, b1), b2) = Branch2 c b1 b2
 
+while :: Parser Statement
+while = accept "while" <-+> condition <+> block <+-> accept "end" +>> While
 
 condition :: Parser Condition
 condition = token letters' >>> Condition

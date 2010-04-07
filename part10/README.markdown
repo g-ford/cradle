@@ -1,4 +1,4 @@
-#LBAC - Part 10 - Control Structures
+#LBAC - Part 10 - Basic Control Structures
 
 It's time to move on from basic mathmatical expressions and start looking at control structures.  
 
@@ -11,12 +11,15 @@ First of all we will create some 'holding' functions. Let's define these first.
     
 What this says is that a `program` is a `block` followed by the `end` keyword, and that a `block` is any number of `statemtents`.
 
-As usual this requires a type, a parser.  The types are very simple.
-
-    data Program = Program Block deriving (Show)
-    data Block = Block String deriving (Show)
+As usual this requires a type, a parser and an emitter.  
 
 ### Parsing a Program
+
+The types are very simple.
+
+    data Program = Program Block deriving (Show)
+    type Block = [Statement]
+    data Statement = Statement String deriving (Show)
 
 Because multi-character keywords are pretty simple using our techniques, we will skip the single character keyword versions. I will be using a function called `accept` which is a simple parser that reads the `letters` and then compares it to the given keyword.  I've also created a `letters'` that fails on an empty string. I'll leave the definition of these as an exercise.
 
@@ -199,3 +202,101 @@ This is where we really need to keep track of our label counter.  Because we nee
               (lblEnd, s3)  = getLbl s2
               
 As I said, with 4 intermediate counters, the threading does get a bit hairy.  I took a quick look at the [State Monad](http://www.haskell.org/all_about_monads/html/statemonad.html) which looks like a nice way to simplify this issue, but it was a bit too much to introduce just yet.  I might retro-fit the State Monad as a seperate article outside this series.
+
+## While
+
+Third time round we should be able to fly through this. The definition of while is 
+
+    WHILE  <condition> <block> END
+    
+Which is very similar to the if definition.  The difference is in the generated asm.
+
+### Parsing While
+
+By now we don't really need an explaination for this.
+
+    data Statement = Statement String 
+                  | Branch Condition Block
+                  | Branch2 Condition Block Block
+                  | While Condition Block
+                  deriving (Show)
+                  
+    statement :: Parser Statement
+    statement =  while <|> ifelse <|> ifthen <|> other
+
+    while :: Parser Statement
+    while = accept "while" <-+> condition <+> block <+-> accept "end" >>> buildWhile
+            where buildWhile (c, b) = While c b
+        
+No surprises there.
+
+### Emitting While
+
+The asm for a while statement is different from a while in that we need a start label to come back to at the end of the loop.  We jump to the end label if the condition is **true** where as in an if we were jump if false.
+
+The desired asm looks like:
+
+    L1: 
+    <condition>
+    je L2
+    <block>
+    jmp L1
+    L2:
+    
+Once again, the lable counter threading is tedious, but other than that the function is the same as we've seen before and is dictated by the asm structure.
+
+    emitStatement s (While c b) = (s', start ++ cond ++ jmp ++ block ++ loop ++ end)
+        where start = emitLbl startLbl
+              (s1, cond) = emitCondition s c
+              jmp = emitLn ("je " ++ endLbl)
+              (s', block) = emitBlock' s3 b
+              loop = emitLn ("jmp " ++ startLbl)
+              end = emitLbl endLbl
+              (endLbl, s2) = getLbl s1
+              (startLbl, s3) = getLbl s2
+              
+## Conclusions
+
+For those that haven't been following along, you can get all the code from github. Let's try some complicated samples.
+
+    C:\cradle\code\src>runhaskell Lbach.hs "while a if b c else d end e end f end"
+    L1:
+            <condition> a
+            je L0
+            <condition> b
+            jne L2
+            <block> c
+            jmp L3
+    L2:
+            <block> d
+    L3:
+            <block> e
+            jmp L1
+    L0:
+            <block> f
+            ret
+    C:\cradle\code\src>runhaskell Lbach.hs "if a while b c d e end f g else h i if j k end end end"
+            <condition> a
+            jne L0
+    L3:
+            <condition> b
+            je L2
+            <block> c
+            <block> d
+            <block> e
+            jmp L3
+    L2:
+            <block> f
+            <block> g
+            jmp L1
+    L0:
+            <block> h
+            <block> i
+            <condition> j
+            jne L4
+            <block> k
+    L4:
+    L1:
+            ret
+    
+Apparently, with only and if and a while statement, what we have is capable of producing almost any program.  But in the next article we will be creating a few more control structures such as for loops and a break statement.
