@@ -141,3 +141,61 @@ The only tricky part is following the label counter through.  We first send the 
     L0:
             ret
     *Main>
+    
+## If-Else
+
+Now that we have the basic concepts of creating branches, extending it to the if-else statement not so hard. Extending the definition of if to include the else statment looks like:
+
+    IF <condition> <block> [ ELSE <block>] ENDIF
+
+Before we start, we need to modify `other` to ignore the `else` keyword.  I chose to use a keyword list to ignore rather than test for individual keywords. 
+    
+    keywords = ["if", "else", "end"]
+
+    other :: Parser Statement
+    other = (token letters') <=> (\x -> not $ any (==x) keywords) >>> Statement
+    
+### Parsing If-Else
+
+You could treat `else` as an optional part of `ifthen` but I chose to seperate them into seperate type constructors and functions. 
+
+    data Statement = Statement String 
+                  | Branch Condition Block
+                  | Branch2 Condition Block Block
+                  deriving (Show)
+                  
+    statement :: Parser Statement
+    statement =  ifelse <|> ifthen <|> other
+                  
+    ifelse :: Parser Statement		
+    ifelse = accept "if" <-+> condition <+> block <+-> accept "else" <+> block <+-> accept "end" >>> br
+        where br ((c, b1), b2) = Branch2 c b1 b2
+    
+As you can see, it is much the same as the basic if statement. The only difference is that we add a second `Block` to the type constructor to allow for the else body.  Again, recusrion allows for nested if statements in nested if-else statements all the way down to turtles.
+
+### Emitting If-Else
+
+The asm for and if-else is not much more complicated than the if version, but it does entail another jump.
+
+    <condition> ;calculate the condition
+    jne else    ;goto 'else' if the condition is NOT equal
+    <block>     ;the block to execute if the condition is true
+    jmp end     ;an unconditional jump to skip the else block
+    else:
+    <block>     ;the block to execute if the condition is false (the else block)
+    end: 
+
+This is where we really need to keep track of our label counter.  Because we need two labels for an if-else, one for the jump to the else portion and another for the jump to the end, the threading gets kind of hairy.  I'll just show it to you and let you figure out where it winds it's way through.
+
+    emitStatement s (Branch2 cond b1 b2) = (s', c ++ jmpElse ++ block1 ++ jmpEnd ++ el ++ block2 ++ end)
+        where (s1, c)       = emitCondition s cond 
+              jmpElse       = emitLn ("jne " ++ lblElse)
+              (s4, block1)  = emitBlock' s3 b1
+              jmpEnd        = emitLn ("jmp " ++ lblEnd)
+              el            = emitLbl lblElse
+              (s', block2)  = emitBlock' s4 b2
+              end           = emitLbl lblEnd
+              (lblElse, s2) = getLbl s1
+              (lblEnd, s3)  = getLbl s2
+              
+As I said, with 4 intermediate counters, the threading does get a bit hairy.  I took a quick look at the [State Monad](http://www.haskell.org/all_about_monads/html/statemonad.html) which looks like a nice way to simplify this issue, but it was a bit too much to introduce just yet.  I might retro-fit the State Monad as a seperate article outside this series.
