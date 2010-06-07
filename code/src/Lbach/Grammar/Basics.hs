@@ -9,6 +9,8 @@ data Statement = Statement String
 		      | Branch Condition Block
 		      | Branch2 Condition Block Block
               | While Condition Block
+			  | Loop Block
+              | DoUntil Block Condition
 		      deriving (Show)
 
 data Condition = Condition String deriving (Show)

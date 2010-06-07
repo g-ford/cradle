@@ -9,4 +9,4 @@ import Lbach.Emitter
 main :: IO ()
 main = getArgs >>= putStrLn . emit . parse . head
 
-
+p = putStrLn . emit . parse

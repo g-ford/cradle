@@ -5,6 +5,8 @@ import Char
 -- |A general parser type
 type Parser a = String -> Maybe (a, String) 
 
+keywords = ["if", "else", "end", "while", "until"]
+
 -- General Parsers
 char :: Parser Char
 char [] = Nothing
