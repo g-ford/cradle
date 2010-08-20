@@ -4,7 +4,9 @@ import Lbach.Grammar.Basics
 import Lbach.Emitter.Core
 import Data.List
 
-type State = Int
+newtype State = State { labelCounter :: Int,
+                        breakLabel :: [String]
+                      } deriving (Show)
 
 emitBlock :: Block -> String
 emitBlock b = result
