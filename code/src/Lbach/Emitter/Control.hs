@@ -4,13 +4,9 @@ import Lbach.Grammar.Basics
 import Lbach.Emitter.Core
 import Data.List
 
-newtype State = State { labelCounter :: Int,
-                        breakLabel :: [String]
-                      } deriving (Show)
-
 emitBlock :: Block -> String
-emitBlock b = result
-	where (s, result) = emitBlock' 0 b
+emitBlock = result
+	where result = evalState emitBlock' 0 
 
 emitBlock' :: State -> [Statement] -> (State, String)
 emitBlock' s [] = (s, "")

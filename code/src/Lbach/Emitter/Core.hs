@@ -1,13 +1,24 @@
 module Lbach.Emitter.Core where
 
+data EmitterData = EmitterData {
+    lblCounter :: Int,
+    lastLabel :: String
+}
+
+type EmitterState = State EmitterData
+
 -- Prefix a string with a tab
 emitSt s = "\t" ++ s
  
 -- Prefix a string with a tab and postfix it with a new line
 emitLn s = (emitSt s) ++ "\n"
 
-getLbl :: Int -> (String, Int)
-getLbl count = ("L" ++ (show count), count + 1)
+getLbl :: EmitterState String
+getLbl = do 
+    st <- get
+    let l = "L" ++ (show lblCounter st)
+    put st { lblCounter = 1 + lblCounter st }
+    return l
 
 emitLbl :: String -> String
 emitLbl lbl = lbl ++ ":\n"
