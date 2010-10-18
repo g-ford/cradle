@@ -22,7 +22,7 @@ Annoyingly, 9 times out of 10, any example on the State Monad uses the random nu
 
 ## Simple Example
 
-Rather than try to retro fit the State Monad throughout our emitter, which will be complex and tedious, I will use a simplified example.
+Rather than try to retro fit the State Monad throughout our emitter in this article, which will be complex and tedious, I will use a simplified example.
 
 First thing we do is create a data type to collect all out stateful information, and a new type using `State` and our new data type.
 
@@ -56,4 +56,48 @@ Next we'll create an example that takes an extra parameter.  A function that gen
         l <- newLabel
         return (l ++ ":  #" ++ x)
         
-Let's take a moment to understand what this one is doing.  You'll recall that the State Monad is a wrapper for the type `s -> (a, s)` which means that the above type signature expands into `String -> s -> (String, s)`.  This means that this function will also take the state as input, which is then passed onto `newLabel` through the State Monads internals.  
+Let's take a moment to understand what this one is doing.  You'll recall that the State Monad is a wrapper for the type `s -> (a, s)` which means that the above type signature expands into `String -> s -> (String, s)`.  This means that this function will also take the state as input, which is then passed onto `newLabel` through the State Monads internals. This is a key concept in turning your manual state management code into something that can be used with the state monad. [Mike Vanier explains](http://mvanier.livejournal.com/1901.html) how we can turn the 5 different type of functions using state into one standard format: `s -> (String, s)`. 
+
+The next example is calling multiple functions that use state from one function. 
+
+    -- Simple example showing how we no longer need to manually thread the state when creating labels 
+    fakeIfStatement :: MyStateMonad String   
+    fakeIfStatement = do 
+        falseBranch <- newLabel
+        endLabel <- newLabel
+        return ("if not true then \njump " ++ falseBranch ++ "\nDo some true stuff\njump " ++ endLabel ++ "\n" ++ falseBranch ++ ": #some stuff to do if false\n" ++ endLabel) 
+      
+## Executing the State Monad      
+
+Finally we need to tie it all together.  The state monad comes with three utility functions for executing the code.
+
+1. `runState` returns the result and the state as a tuple
+2. `evalState` returns the result and discards the state i.e. `(result, _) = runState`
+3. `execState` returns the state only and discards the result i.e. `(_, state) = runState`
+
+Each of these functions take a fucntion of type `State s a` and an intial state of type `s`.  So first we will create our initial state.
+
+    initialState = EmitStuff { lblCounter = 0, lastLabel = "" }
+
+We can then use any of the utility functions to execute our code against this state.
+
+    runState fakeIfStatement initialState 
+    -- or
+    evalState newLabel initialState
+    
+But this is not very useful as the state is reset everytime we apply it to a new function.  We have already seen the answer in `fakeIfStatement`.  We simply create one function that executes all the other functions for the duration of the state.
+
+    -- Tying it all together 
+    emitAll = evalState emit EmitStuff { lblCounter = 0, lastLabel = "" } 
+        where emit = do
+                  a <- emitLabelAndComment "This is the first label"
+                  b <- fakeIfStatement 
+                  c <- emitLabelAndComment "This is the last label"
+                  return (a ++ "\n" ++  b ++ "\n" ++ c)
+                  
+Now if you were to execute `putStrLn & emitAll` in `ghci` you will see labels nicely placed and incremented as expected.
+
+You can download and play with all of the above from Github.
+
+## Implementing in LBaCH
+

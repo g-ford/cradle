@@ -24,7 +24,8 @@ emitLabelAndComment x = do
     l <- newLabel
     return (l ++ ":  #" ++ x)
 
--- Simple example showing how we no longer need to manually thread the state when creating labels         
+-- Simple example showing how we no longer need to manually thread the state when creating labels    
+fakeIfStatement :: MyStateMonad String     
 fakeIfStatement = do 
     falseBranch <- newLabel
     endLabel <- newLabel
