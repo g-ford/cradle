@@ -1,5 +1,7 @@
 module Lbach.Emitter.Core where
 
+import Control.Monad.State
+
 data EmitterData = EmitterData {
     lblCounter :: Int,
     lastLabel :: String
@@ -16,12 +18,12 @@ emitLn s = (emitSt s) ++ "\n"
 getLbl :: EmitterState String
 getLbl = do 
     st <- get
-    let l = "L" ++ (show lblCounter st)
+    let l = "L" ++ show(lblCounter st)
     put st { lblCounter = 1 + lblCounter st }
     return l
 
 emitLbl :: String -> String
-emitLbl lbl = lbl ++ ":\n"
+emitLbl = (++ ":\n")
  
 -- Basic math functions
 popEbx = emitLn "POP ebx"

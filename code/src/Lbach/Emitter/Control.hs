@@ -3,57 +3,68 @@ module Lbach.Emitter.Control where
 import Lbach.Grammar.Basics
 import Lbach.Emitter.Core
 import Data.List
+import Control.Monad.State
 
 emitBlock :: Block -> String
-emitBlock = result
-	where result = evalState emitBlock' 0 
+emitBlock b = evalState e EmitterData { lblCounter = 0, lastLabel = "" }
+	where e = do
+              a <- emitBlock' b
+              return a
 
-emitBlock' :: State -> [Statement] -> (State, String)
-emitBlock' s [] = (s, "")
-emitBlock' s (b:bs) = (s', first ++ rest)
-	where (s1, first) = emitStatement s b
-	      (s', rest) = emitBlock' s1 bs
+emitBlock' :: Block -> EmitterState String
+emitBlock' [] = do 
+                  return ""
+emitBlock' (st:bs) = do
+    a <- emitStatement st
+    b <- emitBlock' bs
+    return (a ++ b)
 
-emitStatement :: State -> Statement -> (State, String)
-emitStatement s (Branch cond b1) = (s', c ++ jmp ++ block1 ++ end)
-    where (s1, c)       = emitCondition s cond 
-          jmp           = emitLn ("jne " ++ lbl)
-          (s', block1)  = emitBlock' s2 b1
-          end           = emitLbl lbl
-          (lbl, s2)     = getLbl s1
-emitStatement s (Branch2 cond b1 b2) = (s', c ++ jmpElse ++ block1 ++ jmpEnd ++ el ++ block2 ++ end)
-    where (s1, c)       = emitCondition s cond 
-          jmpElse       = emitLn ("jne " ++ lblElse)
-          (s4, block1)  = emitBlock' s3 b1
-          jmpEnd        = emitLn ("jmp " ++ lblEnd)
-          el            = emitLbl lblElse
-          (s', block2)  = emitBlock' s4 b2
-          end           = emitLbl lblEnd
-          (lblElse, s2) = getLbl s1
-          (lblEnd, s3)  = getLbl s2
-emitStatement s (While c b) = (s', start ++ cond ++ jmp ++ block ++ loop ++ end)
-    where start 	  	 = emitLbl startLbl
-          (s1, cond)  	 = emitCondition s c
-          jmp 		  	 = emitLn ("je " ++ endLbl)
-          (s', block) 	 = emitBlock' s3 b
-          loop 		  	 = emitLn ("jmp " ++ startLbl)
-          end 		  	 = emitLbl endLbl
-          (endLbl, s2) 	 = getLbl s1
-          (startLbl, s3) = getLbl s2
-emitStatement s (Loop b) = (s', start ++ block ++ jmp) 
-    where start          = emitLbl startLbl
-          (s', block)    = emitBlock' s1 b
-          jmp 		  	 = emitLn ("jmp " ++ startLbl)
-          (startLbl, s1) = getLbl s
-emitStatement s (DoUntil b c) = (s', start ++ block ++ cond ++ jmp ++ loop ++ end) 
-    where start 	  	 = emitLbl startLbl
-          (s1, cond)  	 = emitCondition s c
-          jmp 		  	 = emitLn ("je " ++ endLbl)
-          (s', block) 	 = emitBlock' s3 b
-          loop 		  	 = emitLn ("jmp " ++ startLbl)
-          end 		  	 = emitLbl endLbl
-          (endLbl, s2) 	 = getLbl s1
-          (startLbl, s3) = getLbl s2
-emitStatement s (Statement b) = (s, emitLn ("<block> " ++ b))
+ 
+emitStatement :: Statement -> EmitterState String
+
+emitStatement (Branch cond b1) = do
+    endLbl <- getLbl
+    c <- emitCondition cond
+    let jmp = emitLn ("jne " ++ endLbl)
+    b <- emitBlock' b1
+    return (c ++ jmp ++ b ++ (emitLbl endLbl))
+
+emitStatement (Branch2 cond b1 b2) = do
+    endLbl <- getLbl
+    elseLbl <- getLbl
+    c <- emitCondition cond
+    block1 <- emitBlock' b1
+    block2 <- emitBlock' b2
+    let jmpElse = emitLn ("jne " ++ elseLbl)
+    let jmpEnd = emitLn ("jmp " ++ endLbl)
+    return (c ++ jmpElse ++ block1 ++ jmpEnd ++ (emitLbl elseLbl) ++ block2 ++ (emitLbl endLbl))
+
+emitStatement (While cond b) = do
+    startLbl <- getLbl
+    endLbl <- getLbl
+    c <- emitCondition cond
+    block <- emitBlock' b
+    let jmp = emitLn ("je " ++ endLbl)
+    let loop = emitLn ("jmp " ++ startLbl)
+    return ((emitLbl startLbl) ++ c ++ jmp ++ block ++ loop ++ (emitLbl endLbl))
+
+emitStatement (Loop b) = do
+    startLbl <- getLbl
+    block <- emitBlock' b
+    let jmp = emitLn ("je " ++ startLbl)
+    return ((emitLbl startLbl) ++ block ++ jmp)
+
+emitStatement (DoUntil b cond) = do
+    startLbl <- getLbl
+    endLbl <- getLbl
+    c <- emitCondition cond
+    block <- emitBlock' b
+    let jmp = emitLn ("je " ++ endLbl)
+    let loop = emitLn ("jmp " ++ startLbl)
+    return ((emitLbl startLbl) ++ block ++ c ++ jmp ++ loop ++ (emitLbl endLbl))
+
+emitStatement (Statement b) = do
+    return (emitLn ("<block> " ++ b))
     
-emitCondition s (Condition c) = (s, emitLn ("<condition> " ++ c))
+emitCondition (Condition c) = do
+    return (emitLn ("<condition> " ++ c))
