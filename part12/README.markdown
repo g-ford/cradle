@@ -1,6 +1,6 @@
 #LBAC - Part 12 - Introducing the State Monad
 
-In the [last installment]() you may have noticed that there was a lot of state threading in the emitter functions. This involved a lot of careful ordering of `s1`, `s2` etc.  which is quickly becoming a problem. Especially so when you aren't consistent with parameter ordering - `getLabel` took the counter last whilst `emitStatment` was taking the counter as the first parameter.
+In the [last installment](http://alephnullplex.appspot.com/blog/view/2010/04/07/lbach-10-basic-control-structures) you may have noticed that there was a lot of state threading in the emitter functions. This involved a lot of careful ordering of `s1`, `s2` etc.  which is quickly becoming a problem. Especially so when you aren't consistent with parameter ordering - `getLabel` took the counter last whilst `emitStatment` was taking the counter as the first parameter.
 
 It is a misnomer that functional programming cannot have state, rather it cannot have side effects, which is a very different ideal.  If you need to maintain state in your application, and a compiler inherently does, then you need to continually pass this state from one function to the next.  Conversely, all your functions that modify the state must all return the entire state.
 
@@ -97,7 +97,18 @@ But this is not very useful as the state is reset everytime we apply it to a new
                   
 Now if you were to execute `putStrLn & emitAll` in `ghci` you will see labels nicely placed and incremented as expected.
 
-You can download and play with all of the above from Github.
+[You can download and play with all of the above from Github.](http://github.com/alephnullplex/cradle/blob/master/part12/state.hs)
 
 ## Implementing in LBaCH
 
+Implementation into the existing `Emitter.Control` required a rather large rewrite (94% according to git), but was not terribly difficult.  It now reads much clearer and looks a lot more like the BNF notation. 
+
+For now I have made the state entry point at the `emitBlock` level, but in future it may be moved up to encompass the entire emit process.  
+
+    emitBlock :: Block -> String
+    emitBlock b = evalState e EmitterData { lblCounter = 0, lastLabel = "" }
+        where e = do
+                  a <- emitBlock' b
+                  return a 
+                  
+You can find all the gory details here.
