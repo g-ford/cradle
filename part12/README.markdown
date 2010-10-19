@@ -111,4 +111,4 @@ For now I have made the state entry point at the `emitBlock` level, but in futur
                   a <- emitBlock' b
                   return a 
                   
-You can find all the gory details here.
+[You can find all the gory details here.](http://github.com/alephnullplex/cradle/blob/master/part12/lbach-12.zip)
