@@ -1,210 +1,114 @@
-#LBAC - Part 11 - Loops
+#LBAC - Part 11 - Introducing the State Monad
 
-There are a few kinds of loops in your average imperitive langauage.  There are pre and post-condition loops, loops which you can break out of the middle and then there a loops that iterate over a collection.
+In the [last installment](http://alephnullplex.appspot.com/blog/view/2010/04/07/lbach-10-basic-control-structures) you may have noticed that there was a lot of state threading in the emitter functions. This involved a lot of careful ordering of `s1`, `s2` etc.  which is quickly becoming a problem. Especially so when you aren't consistent with parameter ordering - `getLabel` took the counter last whilst `emitStatment` was taking the counter as the first parameter.
 
-We'll progress through these in increasing difficulty. Starting with an infinite loop, through to your standard `for` loop.
+It is a misnomer that functional programming cannot have state, rather it cannot have side effects, which is a very different ideal.  If you need to maintain state in your application, and a compiler inherently does, then you need to continually pass this state from one function to the next.  Conversely, all your functions that modify the state must all return the entire state.
 
-## The Grammar
+The State Monad was created for instances exactly like this. It defines an explicit interface for passing state from one function to the next, and provides several functions for executing the functions using this state.  I'm not going to provide yet another State Monad breakdown - for that I can recommend the following: [the official wiki](http://www.haskell.org/haskellwiki/State_Monad), [a great explaination of the mechanics](http://coder.bsimmons.name/blog/2009/10/the-state-monad-a-tutorial-for-the-confused/) and most recently [Learn you a Haskell](http://learnyouahaskell.com/for-a-few-monads-more#state).
 
-First of all we will define the grammar for all out types of loops.
+## Some things I learned the hard way
 
-    //Infinite loop
-    LOOP        { L = getLbl;
-                  emitLbl L }
-    <block>
-    END     { Emit(jmp L }
-    
-    //Post coditional
-    DO          { L = getLbl
-                  emitLbl L }
-    <block>
-    UNTIL
-    <condition> { Emit(JNE L) }
-    
-    //For Loop
-    FOR <ident> = <expr1> TO <expr2> <block> END
+### The State Monad and Record Syntax
 
-These translate into the follow data type
+I really struggled with using the State Monad in a situation where multiple peices of state are used.  As the compiler is going to need many peices of state such as the label counter, break label, symbol table etc., I started looking for info on record syntax and State Monads.  The best I could find was a few paragraphs in [Real World Haskell](http://book.realworldhaskell.org/read/monads.html#x_Wh) which was pretty clear if brief.
 
-    data Statement = Statement String 
-                  | Branch Condition Block
-                  | Branch2 Condition Block Block
-                  | While Condition Block
-                  | Loop Block
-                  | DoUntil Block Condition
-                  | For Expression Expression Block
-                  deriving (Show)
+### Types for Functions that use the State Monad
 
-## Infinite Loops
+Almost all the sample code and tutorials on using the state monad involved no parameters for the functions.  All the types where of `State s a` and almost no examples showed how to pass in extra parameters.  Thankfully Learn you a Haskell had some examples that used `b -> State s a` which lead me to figure out that functions using the State monad can have any type but final type of a function must be `State s a` and that the type of the function used with `runState` et.al. must be `State s a` only.  Took me a while to figure this one out.
 
-An infinite loop by itself is pretty useless, but combined with a `break` statement it can be pretty handy for when you don't really know how long you need to be going through your loop. A typical example of an infinite loop is a game loop or an event loop, that essentially loops while true until a particular state, event or message terminates the program.
+### Random number examples
 
-The paser is very simple. We just drop the keywords and pass the block onto the `Loop` data constructor.
+Annoyingly, 9 times out of 10, any example on the State Monad uses the random number example.  This example is next to useless as it neatly ties up the original state in `StdGen` which hides the actual usage of `State`. Please try to come up with something original and worthwhile that explains the whole thing.  Thanks to Learn you a Haskell, which uses a simple stack example, I was able to figure how and when the `State` is called.
 
-    -- |Parses loop..end statments
-    loop :: Parser Statement
-    loop = accept "loop" <-+> block <+-> accept "end" >>> Loop
+## Simple Example
 
-The assembly to create an infinite loop is just an unconditional jump back to the start of the loop.  This means we will require a label at the start of the block and a simple `jmp` after our block.
+Rather than try to retro fit the State Monad throughout our emitter in this article, which will be complex and tedious, I will use a simplified example.
 
-    emitStatement (Loop b) = do
-        startLbl <- getLbl
-        block <- emitBlock' b
-        let jmp = emitLn ("je " ++ startLbl)
-        return ((emitLbl startLbl) ++ block ++ jmp)
-          
-## Post Conditonal Loop
+First thing we do is create a data type to collect all out stateful information, and a new type using `State` and our new data type.
 
-We already have a preconditional loop with `while`, so now we will add it's cousin the `do...until`. We use the keyword `until` to avoid some issues with the `while` keyword. This loop is useful where you would like something to happen at least once.
-
-On the face of it, this is just `while` with the `condition` and `block` reversed. That's exactly how we will treat it. The recogniser is the same as `while` with minor order adjustments, as is the emitter.
-
-    -- |Parses do..until statments
-    dountil :: Parser Statement
-    dountil = accept "do" <-+> block <+-> accept "until" <+> condition +>> DoUntil
-    
-    emitStatement (DoUntil b cond) = do
-        startLbl <- getLbl
-        c <- emitCondition cond
-        block <- emitBlock' b
-        let jmp = emitLn ("je " ++ startLbl)
-        return ((emitLbl startLbl) ++ block ++ c ++ jmp)
+    -- This will hold all of the data in our state
+    data EmitStuff = EmitStuff {
+        lblCounter :: Int,
+        lastLabel :: String 
+        } deriving (Show)
         
-## For loop
+    -- It is common practice to make your own state type
+    type MyStateMonad = State EmitStuff 
+        
+`lblCounter` will hold the current count for creating numbered labels, whilst `lastLabel` will be the last generated label.  
 
-The for loop construct we are going to build here is not the c-style one with a condition and increment function. We are going to use a simpler Basic style construct that is typically used like:
+Next we will create a function that generates a new label.  This will solely use the state to calculate the new label, and then update the state. Do notation makes this much clearer to read.
 
-    FOR x=1 TO 10
-        <block>
+    -- Generates a new label based on the current label counter
+    -- Stores the generated label, and updates the label counter
+    newLabel :: MyStateMonad String
+    newLabel = do 
+        st <- get
+        let l = "L" ++ show(lblCounter st)
+        put st { lblCounter = lblCounter st + 1, lastLabel = l}
+        return l
+        
+Next we'll create an example that takes an extra parameter.  A function that generates a label with a comment.
 
-There are a few assumptions with this construct.  It is assumed that the 'counter' is an integer that incements by one on each pass through the loop.
+    -- Emits a label followed by a comment 
+    emitLabelAndComment :: String -> MyStateMonad String
+    emitLabelAndComment x = do 
+        l <- newLabel
+        return (l ++ ":  #" ++ x)
+        
+Let's take a moment to understand what this one is doing.  You'll recall that the State Monad is a wrapper for the type `s -> (a, s)` which means that the above type signature expands into `String -> s -> (String, s)`.  This means that this function will also take the state as input, which is then passed onto `newLabel` through the State Monads internals. This is a key concept in turning your manual state management code into something that can be used with the state monad. [Mike Vanier explains](http://mvanier.livejournal.com/1901.html) how we can turn the 5 different type of functions using state into one standard format: `s -> (String, s)`. 
 
-You may have noticed in the first section that I (intentionally) did not add any psuedo-syntax to the for loop syntax.  If we were to try to directly translate a for loop into assembly it would be a bit tiresome and quite ugly.  Instead, we will translate the source into an alternative construct.
+The next example is calling multiple functions that use state from one function. 
+
+    -- Simple example showing how we no longer need to manually thread the state when creating labels 
+    fakeIfStatement :: MyStateMonad String   
+    fakeIfStatement = do 
+        falseBranch <- newLabel
+        endLabel <- newLabel
+        return ("if not true then \njump " ++ falseBranch ++ "\nDo some true stuff\njump " ++ endLabel ++ "\n" ++ falseBranch ++ ": #some stuff to do if false\n" ++ endLabel) 
+      
+## Executing the State Monad      
+
+Finally we need to tie it all together.  The state monad comes with three utility functions for executing the code.
+
+1. `runState` returns the result and the state as a tuple
+2. `evalState` returns the result and discards the state i.e. `(result, _) = runState`
+3. `execState` returns the state only and discards the result i.e. `(_, state) = runState`
+
+Each of these functions take a fucntion of type `State s a` and an intial state of type `s`.  So first we will create our initial state.
+
+    initialState = EmitStuff { lblCounter = 0, lastLabel = "" }
+
+We can then use any of the utility functions to execute our code against this state.
+
+    runState fakeIfStatement initialState 
+    -- or
+    evalState newLabel initialState
     
-    // alternative for loop construct
-    <ident> = <expr1>
-    TEMP = <expr2>
-    WHILE <ident> <= TEMP
-    <block>
-    <ident> = <ident> + 1
-    END
-    
-So we will parse the construct, but rather than emit the assembly directly, we will actually just 're-write' the AST to this new construct, which we can then just emit with our existing code.  
+But this is not very useful as the state is reset everytime we apply it to a new function.  We have already seen the answer in `fakeIfStatement`.  We simply create one function that executes all the other functions for the duration of the state.
 
-Aside: The 're-writeing' of the AST is quite common in programming languages and is often called 'syntactical sugar'.  In a 'real' compiler, there are often several optimisation steps that re-write the AST that sits between the parser and emitter.  Our 'toy' compiler omits these optimisation passes.
-
-To do this we will need to remediate our expression parser and emitter so that they work in the larger context of our program parser.
-
-We'll bring the `Assign` type into be a data constructor for `Statement`, add the assignment option to `statement` add a new pattern to `emitStatment`, and (for now) ignore the sections and just emit the text section.
-
-    -- Lbach.Grammar.Basics
-    data Statement = Statement String 
-                  | Branch Condition Block
-                  | Branch2 Condition Block Block
-                  | While Condition Block
-                  | Loop Block
-                  | DoUntil Block Condition
-                  | Assign Assignment
-                  deriving (Show)
+    -- Tying it all together 
+    emitAll = evalState emit EmitStuff { lblCounter = 0, lastLabel = "" } 
+        where emit = do
+                  a <- emitLabelAndComment "This is the first label"
+                  b <- fakeIfStatement 
+                  c <- emitLabelAndComment "This is the last label"
+                  return (a ++ "\n" ++  b ++ "\n" ++ c)
                   
-    data Assignment = Assignment String Expression 
-                    deriving (Show)
+Now if you were to execute `putStrLn & emitAll` in `ghci` you will see labels nicely placed and incremented as expected.
 
-    -- Lbach.Parser.Control
-    statement = loop 
-                <|> dountil
-                <|> while 
-                <|> ifelse 
-                <|> ifthen 
-                <|> assign
-                <|> other
-                
-    -- Lbach.Parser.Expressions
-    assign = token letters <+-> token (literal '=') <+> expr +>> Assign
+[You can download and play with all of the above from Github.](http://github.com/alephnullplex/cradle/blob/master/part12/state.hs)
 
-    --Lbach.Emitter.Control
-    emitStatement (Assign s expr) = do
-        return $ emitText expr
-    
-You'll also need to remove `emit2` from `Lbach.Emitter` and update some patterns in `Lbach.Emitter.Expressions` to get it compile.
+## Implementing in LBaCH
 
-Now that's out of the way, we can get down to business on the for loop parser.  Let's revisit the grammar.
+Implementation into the existing `Emitter.Control` required a rather large rewrite (94% according to git), but was not terribly difficult.  It now reads much clearer and looks a lot more like the BNF notation. 
 
-FOR <ident> = <expr1> TO <expr2> <block> END
-or
-FOR <assign> TO <expr> <block> END
+For now I have made the state entry point at the `emitBlock` level, but in future it may be moved up to encompass the entire emit process.  
 
-This leads to a very natual data type and parser.
-
-    -- Add this to Statement
-        | For Statement Expression Block 
-
-    -- |Parse a for loop
-    forloop :: Parser Statement		
-    forloop = accept "for" <-+> assign <+-> accept "to" <+> expr <+> block <+-> accept "end" >>> br
-        where br ((a, e), b) = For a e b
-
-As you can see I chose not to transform the AST at the parser level. Therefore we have to do it at the emitter level.  This is surprisingly quite straight forward.
-
-    emitStatement (For (Assign (Assignment s e1)) e2 b) = do
-        let var1 = s
-        let var2 = "temp"
-        line1 <- emitStatement $ Assign (Assignment s e1)
-        line2 <- emitStatement $ Assign (Assignment var2 e2)
-        rest <- emitStatement (While (Condition (var1 ++ "<=" ++ var2)) b)
-        return $ line1 ++ line2 ++ rest
-        
-## Testing some samples
-
-*Main> p "loop block end end"
-L0:
-        <block> block
-        jmp L0
-        ret
-
-*Main> p "do block until condition end end"
-L0:
-        <block> block
-        <condition> condition
-        je L0
-        ret
-
-*Main> p "for a=1 to 2 block end end"
-        MOV eax, 1
-        MOV [a], eax
-        MOV eax, 2
-        MOV [temp], eax
-L0:
-        <condition> a<=temp
-        je L1
-        <block> block
-        jmp L0
-L1:
-        ret
-*Main> p "for a=1 to 1000 if a b end d = 3+2*c end end"
-        MOV eax, 1
-        MOV [a], eax
-        MOV eax, 1000
-        MOV [temp], eax
-L0:
-        <condition> a<=temp
-        je L1
-        <condition> a
-        jne L2
-        <block> b
-L2:
-        MOV eax, 3
-        PUSH eax
-        MOV eax, 2
-        PUSH eax
-        MOV eax, [c]
-        POP ebx
-        MUL ebx
-        POP ebx
-        ADD eax, ebx
-        MOV [d], eax
-        jmp L0
-L1:
-        ret
-
-*Main>
+    emitBlock :: Block -> String
+    emitBlock b = evalState e EmitterData { lblCounter = 0, lastLabel = "" }
+        where e = do
+                  a <- emitBlock' b
+                  return a 
+                  
+[You can find all the gory details here.](http://github.com/alephnullplex/cradle/blob/master/part11/lbach-11.zip)
