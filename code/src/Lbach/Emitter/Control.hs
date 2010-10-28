@@ -69,9 +69,10 @@ emitStatement (DoUntil b cond) = do
 emitStatement (For (Assign (Assignment s e1)) e2 b) = do
     let var1 = s
     let var2 = "temp"
+    let increment = Assign (Assignment var1 (Add (Var var1) (Num 1)))
     line1 <- emitStatement $ Assign (Assignment s e1)
     line2 <- emitStatement $ Assign (Assignment var2 e2)
-    rest <- emitStatement (While (Condition (var1 ++ "<=" ++ var2)) b)
+    rest <- emitStatement (While (Condition (var1 ++ "<=" ++ var2)) (b ++ [increment]))
     return $ line1 ++ line2 ++ rest
     
 emitStatement (Statement b) = do
