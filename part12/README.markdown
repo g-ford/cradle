@@ -156,55 +156,55 @@ As you can see I chose not to transform the AST at the parser level. Therefore w
         
 ## Testing some samples
 
-*Main> p "loop block end end"
-L0:
-        <block> block
-        jmp L0
-        ret
+    *Main> p "loop block end end"
+    L0:
+            <block> block
+            jmp L0
+            ret
 
-*Main> p "do block until condition end end"
-L0:
-        <block> block
-        <condition> condition
-        je L0
-        ret
+    *Main> p "do block until condition end end"
+    L0:
+            <block> block
+            <condition> condition
+            je L0
+            ret
 
-*Main> p "for a=1 to 2 block end end"
-        MOV eax, 1
-        MOV [a], eax
-        MOV eax, 2
-        MOV [temp], eax
-L0:
-        <condition> a<=temp
-        je L1
-        <block> block
-        jmp L0
-L1:
-        ret
-*Main> p "for a=1 to 1000 if a b end d = 3+2*c end end"
-        MOV eax, 1
-        MOV [a], eax
-        MOV eax, 1000
-        MOV [temp], eax
-L0:
-        <condition> a<=temp
-        je L1
-        <condition> a
-        jne L2
-        <block> b
-L2:
-        MOV eax, 3
-        PUSH eax
-        MOV eax, 2
-        PUSH eax
-        MOV eax, [c]
-        POP ebx
-        MUL ebx
-        POP ebx
-        ADD eax, ebx
-        MOV [d], eax
-        jmp L0
-L1:
-        ret
+    *Main> p "for a=1 to 2 block end end"
+            MOV eax, 1
+            MOV [a], eax
+            MOV eax, 2
+            MOV [temp], eax
+    L0:
+            <condition> a<=temp
+            je L1
+            <block> block
+            jmp L0
+    L1:
+            ret
+    *Main> p "for a=1 to 1000 if a b end d = 3+2*c end end"
+            MOV eax, 1
+            MOV [a], eax
+            MOV eax, 1000
+            MOV [temp], eax
+    L0:
+            <condition> a<=temp
+            je L1
+            <condition> a
+            jne L2
+            <block> b
+    L2:
+            MOV eax, 3
+            PUSH eax
+            MOV eax, 2
+            PUSH eax
+            MOV eax, [c]
+            POP ebx
+            MUL ebx
+            POP ebx
+            ADD eax, ebx
+            MOV [d], eax
+            jmp L0
+    L1:
+            ret
 
-*Main>
+    *Main>
