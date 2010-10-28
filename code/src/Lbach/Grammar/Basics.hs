@@ -11,6 +11,8 @@ data Statement = Statement String
               | While Condition Block
 			  | Loop Block
               | DoUntil Block Condition
+              | Assign Assignment
+              | For Statement Expression Block 
 		      deriving (Show)
 
 data Condition = Condition String deriving (Show)
@@ -23,7 +25,10 @@ data Expression = Num Int
                 | Div Expression Expression
                 | Var String
                 deriving (Show)
-
--- |A type for assignment statments                
-data Assign = Assign String Expression
-              deriving (Show)
+                
+data Assignment = Assignment String Expression 
+                deriving (Show)
+                
+tests :: Statement -> String
+tests (Statement s) = s
+tests (Assign _) = "assignment"

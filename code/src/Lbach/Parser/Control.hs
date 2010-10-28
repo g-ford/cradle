@@ -2,6 +2,7 @@ module Lbach.Parser.Control where
 
 import Lbach.Grammar.Basics
 import Lbach.Parser.Core
+import Lbach.Parser.Expressions
 
 -- |Top level parser and main entry point
 program :: Parser Program
@@ -17,7 +18,9 @@ statement = loop
             <|> dountil
             <|> while 
             <|> ifelse 
-            <|> ifthen 
+            <|> ifthen
+            <|> forloop
+            <|> assign
             <|> other
 
 -- |This is a temporary parser that accepts anything except keywords
@@ -48,3 +51,8 @@ loop = accept "loop" <-+> block <+-> accept "end" >>> Loop
 -- |Parses do..until statments
 dountil :: Parser Statement
 dountil = accept "do" <-+> block <+-> accept "until" <+> condition +>> DoUntil
+
+-- |Parse a for loop
+forloop :: Parser Statement		
+forloop = accept "for" <-+> assign <+-> accept "to" <+> expr <+> block <+-> accept "end" >>> br
+    where br ((s, e), b) = For s e b

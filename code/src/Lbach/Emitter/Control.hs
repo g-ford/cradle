@@ -2,8 +2,10 @@ module Lbach.Emitter.Control where
 
 import Lbach.Grammar.Basics
 import Lbach.Emitter.Core
+import Lbach.Emitter.Expressions
 import Data.List
 import Control.Monad.State
+
 
 emitBlock :: Block -> String
 emitBlock b = evalState e EmitterData { lblCounter = 0, lastLabel = "" }
@@ -21,6 +23,9 @@ emitBlock' (st:bs) = do
 
  
 emitStatement :: Statement -> EmitterState String
+
+emitStatement (Assign a) = do
+    return $ emitTextA a
 
 emitStatement (Branch cond b1) = do
     endLbl <- getLbl
@@ -51,18 +56,24 @@ emitStatement (While cond b) = do
 emitStatement (Loop b) = do
     startLbl <- getLbl
     block <- emitBlock' b
-    let jmp = emitLn ("je " ++ startLbl)
+    let jmp = emitLn ("jmp " ++ startLbl)
     return ((emitLbl startLbl) ++ block ++ jmp)
 
 emitStatement (DoUntil b cond) = do
     startLbl <- getLbl
-    endLbl <- getLbl
     c <- emitCondition cond
     block <- emitBlock' b
-    let jmp = emitLn ("je " ++ endLbl)
-    let loop = emitLn ("jmp " ++ startLbl)
-    return ((emitLbl startLbl) ++ block ++ c ++ jmp ++ loop ++ (emitLbl endLbl))
-
+    let jmp = emitLn ("je " ++ startLbl)
+    return ((emitLbl startLbl) ++ block ++ c ++ jmp)
+    
+emitStatement (For (Assign (Assignment s e1)) e2 b) = do
+    let var1 = s
+    let var2 = "temp"
+    line1 <- emitStatement $ Assign (Assignment s e1)
+    line2 <- emitStatement $ Assign (Assignment var2 e2)
+    rest <- emitStatement (While (Condition (var1 ++ "<=" ++ var2)) b)
+    return $ line1 ++ line2 ++ rest
+    
 emitStatement (Statement b) = do
     return (emitLn ("<block> " ++ b))
     

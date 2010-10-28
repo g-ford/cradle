@@ -13,8 +13,8 @@ emitText expr = case expr of
      Div a b    -> emitText a ++  pushEax ++ emitText b ++ divide
      Var a      -> emitLn ("MOV eax, [" ++ a ++ "]")
      
-emitTextA :: Assign -> String
-emitTextA (Assign a b) = emitText b ++ emitLn ("MOV [" ++ a ++ "], eax")
+emitTextA :: Assignment -> String
+emitTextA (Assignment a b) = emitText b ++ emitLn ("MOV [" ++ a ++ "], eax")
      
 -- Generates the contents of section .data
 emitData :: Expression -> String
@@ -26,8 +26,8 @@ emitData expr = case expr of
     Div a b     -> emitData a ++ emitData b
     otherwise   -> ""
     
-emitDataA :: Assign -> String
-emitDataA (Assign a b) = emitData b 
+emitDataA :: Assignment -> String
+emitDataA (Assignment a b) = emitData b 
  
 -- Generates the contents of section .bss
 emitBss :: Expression -> String    
@@ -38,5 +38,5 @@ emitBss expr = case expr of
     Div a b     -> emitBss a ++ emitBss b
     otherwise   -> ""
     
-emitBssA :: Assign -> String
-emitBssA (Assign a b) = emitLn (a ++ "\tresd") ++ emitBss b
+emitBssA :: Assignment -> String
+emitBssA (Assignment a b) = emitLn (a ++ "\tresd") ++ emitBss b

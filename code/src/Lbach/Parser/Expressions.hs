@@ -6,8 +6,9 @@ import Lbach.Grammar.Basics
 
 
 -- |A parser that identifies assigment statments.
-assign :: Parser (String, Expression)                   
-assign = letters <+-> literal '=' <+> expr
+assign :: Parser Statement                  
+assign = token letters <+-> token (literal '=') <+> expr >>> br
+    where br (v, e) = Assign $ Assignment v e
 
 -- |A parser to detect a factor, the basic token of an expression
 factor :: Parser Expression
