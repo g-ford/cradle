@@ -32,7 +32,7 @@ These translate into the follow data type
                   | While Condition Block
                   | Loop Block
                   | DoUntil Block Condition
-                  | For Expression Expression Block
+                  | For Statement Expression Block
                   deriving (Show)
 
 ## Infinite Loops
@@ -134,10 +134,7 @@ FOR <ident> = <expr1> TO <expr2> <block> END
 or
 FOR <assign> TO <expr> <block> END
 
-This leads to a very natual data type and parser.
-
-    -- Add this to Statement
-        | For Statement Expression Block 
+This leads to a very natual data type and parser. 
 
     -- |Parse a for loop
     forloop :: Parser Statement		
