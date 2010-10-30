@@ -104,7 +104,7 @@ infixl 5 +>>
 (+>>) :: Parser (a, b) -> (a -> b -> c) -> Parser c
 (m +>> n) cs = case m cs of
 	Nothing -> Nothing
-	Just ((a, b), cs') -> Just ((n a b), cs')
+	Just ((a, b), cs') -> Just (n a b, cs')
 
 -- |Sequence operator that pairs up two parsers
 infixl 6 <+>

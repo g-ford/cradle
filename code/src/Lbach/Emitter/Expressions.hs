@@ -6,7 +6,7 @@ import Lbach.Emitter.Core
 -- Generates the contents of section .text
 emitText :: Expression -> String
 emitText expr = case expr of 
-     Num a      -> emitLn ("MOV eax, " ++ (show a))
+     Num a      -> emitLn ("MOV eax, " ++ show a)
      Add a b    -> emitText a ++  pushEax ++ emitText b ++ add
      Sub a b    -> emitText a ++  pushEax ++ emitText b ++ sub
      Mul a b    -> emitText a ++  pushEax ++ emitText b ++ mul

@@ -9,13 +9,10 @@ import Control.Monad.State
 
 emitBlock :: Block -> String
 emitBlock b = evalState e EmitterData { lblCounter = 0, lastLabel = "" }
-	where e = do
-              a <- emitBlock' b
-              return a
+	where e = emitBlock' b
 
 emitBlock' :: Block -> EmitterState String
-emitBlock' [] = do 
-                  return ""
+emitBlock' [] = return ""
 emitBlock' (st:bs) = do
     a <- emitStatement st
     b <- emitBlock' bs
@@ -24,15 +21,14 @@ emitBlock' (st:bs) = do
  
 emitStatement :: Statement -> EmitterState String
 
-emitStatement (Assign a) = do
-    return $ emitTextA a
+emitStatement (Assign a) = return $ emitTextA a
 
 emitStatement (Branch cond b1) = do
     endLbl <- getLbl
     c <- emitCondition cond
     let jmp = emitLn ("jne " ++ endLbl)
     b <- emitBlock' b1
-    return (c ++ jmp ++ b ++ (emitLbl endLbl))
+    return (c ++ jmp ++ b ++ emitLbl endLbl)
 
 emitStatement (Branch2 cond b1 b2) = do
     endLbl <- getLbl
@@ -42,7 +38,7 @@ emitStatement (Branch2 cond b1 b2) = do
     block2 <- emitBlock' b2
     let jmpElse = emitLn ("jne " ++ elseLbl)
     let jmpEnd = emitLn ("jmp " ++ endLbl)
-    return (c ++ jmpElse ++ block1 ++ jmpEnd ++ (emitLbl elseLbl) ++ block2 ++ (emitLbl endLbl))
+    return (c ++ jmpElse ++ block1 ++ jmpEnd ++ emitLbl elseLbl ++ block2 ++ emitLbl endLbl)
 
 emitStatement (While cond b) = do
     startLbl <- getLbl
@@ -51,20 +47,20 @@ emitStatement (While cond b) = do
     block <- emitBlock' b
     let jmp = emitLn ("je " ++ endLbl)
     let loop = emitLn ("jmp " ++ startLbl)
-    return ((emitLbl startLbl) ++ c ++ jmp ++ block ++ loop ++ (emitLbl endLbl))
+    return (emitLbl startLbl ++ c ++ jmp ++ block ++ loop ++ emitLbl endLbl)
 
 emitStatement (Loop b) = do
     startLbl <- getLbl
     block <- emitBlock' b
     let jmp = emitLn ("jmp " ++ startLbl)
-    return ((emitLbl startLbl) ++ block ++ jmp)
+    return (emitLbl startLbl ++ block ++ jmp)
 
 emitStatement (DoUntil b cond) = do
     startLbl <- getLbl
     c <- emitCondition cond
     block <- emitBlock' b
     let jmp = emitLn ("je " ++ startLbl)
-    return ((emitLbl startLbl) ++ block ++ c ++ jmp)
+    return (emitLbl startLbl ++ block ++ c ++ jmp)
     
 emitStatement (For (Assign (Assignment s e1)) e2 b) = do
     let var1 = s
@@ -75,8 +71,6 @@ emitStatement (For (Assign (Assignment s e1)) e2 b) = do
     rest <- emitStatement (While (Condition (var1 ++ "<=" ++ var2)) (b ++ [increment]))
     return $ line1 ++ line2 ++ rest
     
-emitStatement (Statement b) = do
-    return (emitLn ("<block> " ++ b))
+emitStatement (Statement b) = return (emitLn ("<block> " ++ b))
     
-emitCondition (Condition c) = do
-    return (emitLn ("<condition> " ++ c))
+emitCondition (Condition c) = return (emitLn ("<condition> " ++ c))

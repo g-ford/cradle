@@ -10,15 +10,15 @@ data EmitterData = EmitterData {
 type EmitterState = State EmitterData
 
 -- Prefix a string with a tab
-emitSt s = "\t" ++ s
+emitSt s = '\t' : s
  
 -- Prefix a string with a tab and postfix it with a new line
-emitLn s = (emitSt s) ++ "\n"
+emitLn s = emitSt s ++ "\n"
 
 getLbl :: EmitterState String
 getLbl = do 
     st <- get
-    let l = "L" ++ show(lblCounter st)
+    let l = 'L' : show(lblCounter st)
     put st { lblCounter = 1 + lblCounter st }
     return l
 

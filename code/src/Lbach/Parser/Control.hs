@@ -25,7 +25,7 @@ statement = loop
 
 -- |This is a temporary parser that accepts anything except keywords
 other :: Parser Statement
-other = (token letters') <=> (\x -> not $ any (==x) keywords) >>> Statement
+other = token letters' <=> (\x -> not $ any (==x) keywords) >>> Statement
 
 -- |Parses if..then..end statments
 ifthen :: Parser Statement		
