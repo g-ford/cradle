@@ -1,3 +1,8 @@
 dist
 report.html
+*.hi
+*.o
+.hpc
+coverage
+*.tix
 .DS_Store
