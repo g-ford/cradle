@@ -11,7 +11,7 @@ main = defaultMain tests
 
 tests = [
         testGroup "Parser" [
-                testProperty "number1" numberIsNothingWhenEmpty,
-                testProperty "number2" numberIsNothingWhenStartsWithAlpha
+                testProperty "number2" prop_numLeadingAlpha
+			,	testProperty "number1" prop_numEmpty
             ]
         ]

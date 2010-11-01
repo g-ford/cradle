@@ -4,7 +4,7 @@ import Test.QuickCheck
 import Data.Char
 import Lbach.Parser.Expressions
 
-numberIsNothingWhenStartsWithAlpha :: String -> Property
-numberIsNothingWhenStartsWithAlpha x = not(null x) && isAlpha (head x) ==> show (number x) == "Nothing"
+prop_numLeadingAlpha :: String -> Property
+prop_numLeadingAlpha x = not(null x) && isAlpha (head x) ==> show (number x) == "Nothing"
 
-numberIsNothingWhenEmpty x = null x ==> show (number x) == "Nothing"
+prop_numEmpty x = null x ==> show (number x) == "Nothing"

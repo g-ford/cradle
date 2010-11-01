@@ -45,6 +45,20 @@ Build-type:          Simple
 -- Constraint on the version of Cabal needed to build this package.
 Cabal-version:       >=1.4
 
+Flag test
+     Description: Build the test suite, including an executable to run it.
+     Default: False
+
+Executable Run
+    if flag(test)
+        Buildable: True
+    else
+        Buildable: False
+
+    Main-Is: Run.hs
+
+    Build-Depends: QuickCheck >= 2.1, HUnit >= 1.2, test-framework >= 0.3  && < 0.4
+
 
 Executable Lbach
   -- .hs or .lhs file containing the Main module.

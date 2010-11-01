@@ -1,2 +1,4 @@
 dist
+*.hi
+*.o
 .DS_Store
