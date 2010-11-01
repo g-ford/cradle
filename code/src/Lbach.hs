@@ -8,7 +8,7 @@ When used in @ghci@ you can test the compiler using @p@ e.g.
 When used on the command line, you currently have to pass the text in as the first argument. I do 
 plan on takeing filenames as arguments in the future.
 
-@ lbach "a = 2 end" 
+> lbach "a = 2 end" 
 -}
 module Main
 where
