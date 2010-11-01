@@ -1,4 +1,7 @@
 dist
 *.hi
 *.o
+.hpc
+coverage
+*.tix
 .DS_Store

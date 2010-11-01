@@ -1,3 +1,5 @@
+module Main where 
+	
 import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2 (testProperty)
@@ -5,8 +7,15 @@ import Test.Framework.Providers.QuickCheck2 (testProperty)
 import Test.QuickCheck
 import Test.HUnit
 
-import Tests.Lbach.Parser.Expressions
+import Lbach.Tests.Parser.Expressions
 
+{-|
+Runs all tests.  
+The best way to run these is:
+@
+cabal clean && cabal configure -ftest && cabal build && cabal test
+@
+-}
 main = defaultMain tests
 
 tests = [

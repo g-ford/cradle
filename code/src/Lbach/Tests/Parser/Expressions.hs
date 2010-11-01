@@ -1,4 +1,4 @@
-module Tests.Lbach.Parser.Expressions where
+module Lbach.Tests.Parser.Expressions where
 
 import Test.QuickCheck
 import Data.Char
