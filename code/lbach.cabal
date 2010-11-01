@@ -1,7 +1,7 @@
 Name:         Lbach
 Version:      0.1
 Synopsis:     A haskel version of the Tiny language compiler originally by Jack Crenshaw.
-Description:  See http://alephnullplex.appspot.com/blog/view/2010/01/12/lbach-1-introduction for full description.
+Description:  See <http://alephnullplex.appspot.com/blog/view/2010/01/12/lbach-1-introduction> for full description.
 Homepage:     http://alephnullplex.appspot.com/blog/tags/lbach
 License:      MIT
 License-file: LICENSE

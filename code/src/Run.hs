@@ -1,3 +1,10 @@
+{-|
+Runs all tests.  
+The best way to run these is:
+
+> cabal clean && cabal configure -ftest
+> cabal build && cabal test
+-}
 module Main where 
 	
 import Test.Framework (defaultMain, testGroup)
@@ -9,13 +16,7 @@ import Test.HUnit
 
 import Lbach.Tests.Parser.Expressions
 
-{-|
-Runs all tests.  
-The best way to run these is:
-@
-cabal clean && cabal configure -ftest && cabal build && cabal test
-@
--}
+
 main = defaultMain tests
 
 tests = [
