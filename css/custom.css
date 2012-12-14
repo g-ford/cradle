@@ -1,7 +1,6 @@
 html,
 body {
   font-family: 'Open Sans', sans-serif;
-  height: 100%;
 }
 body {
   padding-top: 50px;
@@ -15,16 +14,62 @@ section.content h1 a {
   font-size: 1.2em;
   font-weight: 100;
 }
+section.content h1.thin {
+  text-transform: uppercase;
+  font-size: 2em;
+  font-weight: 100;
+}
+section.content h1.big.thin {
+  font-size: 3em;
+}
 section.content section.byline {
   font-size: 0.8em;
   text-transform: uppercase;
   padding-bottom: 15px;
   color: #999;
 }
-#footer {
-  height: 150px;
+section.content.about p,
+section.content.error {
+  text-align: center;
+  font-size: 1.3em;
+}
+section.content.error h1 {
+  color: #f5f5f5;
+  font-size: 10em;
+  font-weight: bold;
+  padding: .5em;
+  text-shadow: 0px 1px 5px #aaa;
+}
+ul.listing {
+  margin: 0 0 25px 0;
+  padding: 0;
+}
+ul.listing li {
+  list-style-type: none;
+  padding: 7px 5px;
+  border-bottom: 1px solid #EEE;
+}
+ul.listing li span {
+  padding-top: 3px;
+  float: right;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: #999;
+}
+div.navbar .navbar-inner a.brand {
+  font-weight: 100;
+  text-transform: uppercase;
+}
+img.post {
+  margin-left: 25%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  max-width: 70%;
+  max-height: 70%;
+  box-shadow: 0 0 20px #bbb;
 }
 #footer {
+  margin-top: 100px;
   border-top: 1px solid #f5f5f5;
 }
 #footer section.meta {
@@ -53,12 +98,6 @@ section.content section.byline {
   font-size: 4em;
   padding-bottom: .8em;
   padding-right: .7em;
-}
-#wrap {
-  min-height: 100%;
-  height: auto !important;
-  height: 100%;
-  margin: 0 auto -250px;
 }
 @media (max-width: 767px) {
   #footer {

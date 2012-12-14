@@ -6,9 +6,9 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>{{ page.title }}</title>
 
-  <!-- TODO: change name and description -->
-  <meta name="author" content="Carlos Alexandro Becker" />
-  <meta name="description" content="A fantastic blog that is fantastic." />
+  <meta name="author" content="{{ site.author.name }}" />
+  <meta name="description" content="{{ site.description }}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <link rel="alternate" type="application/rss+xml" href="/atom.xml" />
 
@@ -36,7 +36,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </a>
-        <a class="brand" href="/">Carlos Alexandro Becker</a>
+        <a class="brand" href="/">{{ site.title }}</a>
         <ul class="nav">
           <li><a href="/about">About</a></li>
         </ul>
@@ -45,25 +45,22 @@
     </div>
   </div>
 
-  <div id="wrap">
-    <div class="container">
-      {{ content }}
-    </div>
-    <div id="push"></div>
+  <div class="container">
+    {{ content }}
   </div>
 
   <div id="footer">
     <div class="container">
       <section class="meta">
         <div class="block">
-          <a href="https://twitter.com/caarlos0">
+          <a href="https://twitter.com/{{ site.author.twitter }}">
             <i class="icon icon-twitter"></i>
             <div>Follow me on Twitter.</div>
           </a>
         </div>
 
         <div class="block">
-          <a href="https://github.com/caarlos0">
+          <a href="https://github.com/{{ site.author.github }}">
             <i class="icon icon-github"></i>
             <div>
               See my github profile.

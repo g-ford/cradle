@@ -4,3 +4,10 @@ permalink: /posts/:title
 auto: true
 rdiscount:
   extensions: [smart]
+title : Carlos Becker
+production_url : http://caarlos0.github.com
+description: "Througths, flamewars, utilities, tutorials, codes, projects and other things by Carlos Alexandro Becker."
+author :
+  name : Carlos Alexandro Becker
+  github : caarlos0
+  twitter : caarlos0
