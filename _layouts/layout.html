@@ -20,8 +20,8 @@
   rel='stylesheet' type='text/css'>
 
   <!--[if lt IE 9]>
-    <link href="/css/font-awesome-ie7.css" rel="stylesheet">
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <link href="/css/font-awesome-ie7.css" rel="stylesheet">
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 
   <link rel="apple-touch-icon" href="/apple-touch-icon.jpg" />
@@ -36,18 +36,20 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </a>
-        <a class="brand" href="#">Carlos Alexandro Becker</a>
-        <div class="nav-collapse collapse">
-          <ul class="nav">
-            <li class="active"><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-          </ul>
+        <a class="brand" href="/">Carlos Alexandro Becker</a>
+        <ul class="nav">
+          <li><a href="/about">About</a></li>
+        </ul>
         </div>
       </div>
     </div>
   </div>
-  <div class="container">
-    {{ content }}
+
+  <div id="wrap">
+    <div class="container">
+      {{ content }}
+    </div>
+    <div id="push"></div>
   </div>
 
   <div id="footer">
@@ -64,9 +66,7 @@
           <a href="https://github.com/caarlos0">
             <i class="icon icon-github"></i>
             <div>
-              I'm a developer at Totvs S/A and frequently hated for dislike
-              things that "everyone like" and like things that "anyone like"
-              (except me, of course)... but I don't really care about it.
+              See my github profile.
             </div>
           </a>
         </div>
