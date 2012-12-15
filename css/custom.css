@@ -5,6 +5,10 @@ body {
 body {
   padding-top: 50px;
 }
+h1,h2,h3,h4,h5,h6 {
+  font-weight: 100;
+  text-transform: uppercase;
+}
 section.content {
   height: 100%;
   min-height: 100%;
@@ -15,9 +19,7 @@ section.content h1 a {
   font-weight: 100;
 }
 section.content h1.thin {
-  text-transform: uppercase;
   font-size: 2em;
-  font-weight: 100;
 }
 section.content h1.big.thin {
   font-size: 3em;
@@ -32,6 +34,7 @@ section.content.about p,
 section.content.error {
   text-align: center;
   font-size: 1.3em;
+  font-weight: 100;
 }
 section.content.error h1 {
   color: #f5f5f5;
