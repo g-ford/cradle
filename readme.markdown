@@ -11,9 +11,7 @@ took something from [jekyll-bootstrap](https://github.com/plusjade/jekyll-bootst
 and, of course, I'm using [bootstrap](https://github.com/twitter/bootstrap) as
 a base for all the thing.
 
-<img  src="http://i.imgur.com/4bKG5.png" class="post" alt="Up" width="40%"
-      heigth="40%" style="margin-left: 25%; margin-top: 20px; margin-bottom: 20px;
-      max-width: 70%; max-height: 70%; box-shadow: 0 0 20px #bbb;" />
+![Up](http://i.imgur.com/4bKG5.png)
 
 ## Installation
 
