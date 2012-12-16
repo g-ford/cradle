@@ -30,7 +30,7 @@ change is the following:
 
 - [_config.yml](https://github.com/caarlos0/up/blob/gh-pages/_config.yml): Put
 your config there, almost everything will be up and running.
-- [about.yml](https://github.com/caarlos0/up/blob/gh-pages/about.html): Well, that's
+- [about.html](https://github.com/caarlos0/up/blob/gh-pages/about.html): Well, that's
 about you, I'll gonna change it if I am you... OH WAIT!
 - [CNAME](https://github.com/caarlos0/up/blob/gh-pages/CNAME): If you're using
 this on GitHub Pages with a custom domain name, you'll want to change this
