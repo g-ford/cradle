@@ -29,6 +29,9 @@ section.content img {
   margin-top: 20px;
   margin-bottom: 20px;
 }
+section.content h1:first-child {
+  margin-top: 0;
+}
 section.content h1 a {
   text-transform: uppercase;
   font-size: 1.2em;
@@ -36,6 +39,7 @@ section.content h1 a {
 }
 section.content h1.thin {
   font-size: 2em;
+  margin-top: 0;
 }
 section.content h1.big.thin {
   font-size: 3em;
@@ -51,6 +55,11 @@ section.content.error {
   text-align: center;
   font-size: 1.3em;
   font-weight: 100;
+}
+section.content img.noclip {
+  clear: both;
+  box-shadow: none;
+  display: inline-block;
 }
 section.content.error h1 {
   color: #f5f5f5;
@@ -80,20 +89,13 @@ div.navbar .navbar-inner a.brand {
   text-transform: uppercase;
 }
 #footer {
-  margin-top: 70px;
+  margin-top: 50px;
   border-top: 1px solid #f5f5f5;
 }
 #footer section.meta {
   padding: 30px;
   color: #EEE;
   text-align: center;
-}
-#footer section.meta .block {
-  display: inline-block;
-  vertical-align: top;
-  text-align: center;
-  width: 30%;
-  padding: 0 10px;
 }
 #footer section.meta a {
   font-size: 0.8em;
@@ -107,8 +109,9 @@ div.navbar .navbar-inner a.brand {
 }
 #footer section.meta i.icon {
   font-size: 4em;
-  padding-bottom: .8em;
-  padding-right: .7em;
+  padding-bottom: .4em;
+  display: block;
+  margin: auto;
 }
 @media (max-width: 767px) {
   #footer {
@@ -116,5 +119,8 @@ div.navbar .navbar-inner a.brand {
     margin-right: -20px;
     padding-left: 20px;
     padding-right: 20px;
+  }
+  #footer .span2.next {
+    margin-top: 30px;
   }
 }
