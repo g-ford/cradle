@@ -6,7 +6,8 @@ rdiscount:
   extensions: [smart]
 title : Carlos Becker
 production_url : http://caarlos0.github.com
-description: "Througths, flamewars, utilities, tutorials, codes, projects and other things by Carlos Alexandro Becker."
+description: "Througths, flamewars, utilities, tutorials, codes, projects andother things by Carlos Alexandro Becker."
+disqus_shortname: caarlos0blog
 author :
   name : Carlos Alexandro Becker
   github : caarlos0

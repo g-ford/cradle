@@ -3340,6 +3340,9 @@ section.content.error h1 {
   padding: .5em;
   text-shadow: 0px 1px 5px #aaa;
 }
+section.content div.pull {
+  padding-top: 20px;
+}
 ul.listing {
   margin: 0 0 25px 0;
   padding: 0;
