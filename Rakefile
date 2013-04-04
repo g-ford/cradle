@@ -2,6 +2,8 @@ require "rubygems"
 require 'rake'
 require 'yaml'
 require 'time'
+require 'open-uri'
+#require "RMagick"
 
 SOURCE = "."
 CONFIG = {
@@ -46,3 +48,38 @@ desc "Launch preview environment"
 task :preview do
   system "jekyll --auto --server"
 end # task :preview
+
+desc "Update icons based on gravatar!"
+task :icons do
+  gravatar_id = "7ef3cd04888c6d17f34d43e29ec3d46f"
+  base_url = "https://secure.gravatar.com/avatar/#{gravatar_id}?s=500"
+
+  origin = "origin.png"
+  File.delete origin if File.exist? origin
+
+  open(origin, 'wb') do |file|
+    file << open(base_url).read
+  end
+
+  name_pre = "apple-touch-icon-%dx%d-precomposed.png"
+
+  FileList["*apple-touch-ico*.png"].each do |img|
+    File.delete img
+  end
+
+  FileList["*favicon.ico"].each do |img|
+    File.delete img
+  end
+
+  puts "creating favicon.ico"
+  Magick::Image::read(origin).first.resize(16, 16).write("favicon.ico")
+
+  [144, 114, 72, 57].each do |size|
+    puts "creating %d * %d icons" % [size, size]
+    Magick::Image::read(origin).first.resize(size, size).write(name_pre % [size, size])
+  end
+
+  File.delete origin
+end
+
+

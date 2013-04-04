@@ -3,11 +3,15 @@ HR=\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\
 
 build:
 	@echo "${HR}"
-	@echo "Building Up..."
+	@echo "Building Up CSS file..."
 	@echo "${HR}"
-	@cat css/{bootstrap,custom,bootstrap-responsive,font-awesome}.css > css/up.css
-	@recess --compress css/up.css > css/up.min.css
-	@echo "Compressing CSS with Recess...               ${CHECK} Done"
+	@recess --compress _assets/up.less > css/up.css
+	@echo "Compiling and Compressing Less and CSS files with Recess... ${CHECK} Done"
+	@cat _assets/bootstrapjs/* > js/up.js.tmp
+	@cat _assets/up.js >> js/up.js.tmp
+	@uglifyjs -nc  js/up.js.tmp > js/up.js
+	@rm -rf js/up.js.tmp
+	@echo "Mixing JS files... ${CHECK} Done"
 	@echo "${HR}"
 	@echo "Up successfully built."
 	@echo "${HR}"

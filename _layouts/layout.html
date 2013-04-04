@@ -1,41 +1,70 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>{{ page.title }}</title>
 
   <meta name="author" content="{{ site.author.name }}" />
   <meta name="description" content="{{ site.description }}" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="alternate" type="application/rss+xml" href="/atom.xml" />
 
-  <link href="/css/up.min.css" rel="stylesheet">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300'
-  rel='stylesheet' type='text/css'>
+    rel='stylesheet' type='text/css'>
+
+  <link href="/css/up.css" rel="stylesheet">
 
   <!--[if lt IE 9]>
-  <link href="/css/font-awesome-ie7.css" rel="stylesheet">
   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 
-  <link rel="apple-touch-icon" href="/apple-touch-icon.jpg" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-57x57-precomposed.png">
+  <link rel="shortcut icon" href="favicon.ico">
+
 </head>
 
 <body>
-  <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container">
-        <a class="brand" href="/">{{ site.title }}</a>
-        <ul class="nav">
-          <li><a href="/about">About</a></li>
-        </ul>
-        <ul class="nav pull-right">
+  <div class="navbar navbar-fixed-top">
+    <div class="container">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">{{ site.title }}</a>
+      <div class="nav-collapse collapse navbar-responsive-collapse">
+        <ul class="nav pull-right hidden-print">
           <li>
-            <a href="/atom.xml" title="Atom Feed">
+            <a class="hidden-phone" href="http://github.com/caarlos0/up"
+              title="Get this theme!">
+              <i class="icon-download icon-large"></i>
+            </a>
+            <a class="visible-phone" href="http://github.com/caarlos0/up"
+              title="Get this theme!">
+              <i class="icon-download icon-large"></i>
+              Get this theme!
+            </a>
+          </li>
+          <li>
+            <a class="hidden-phone" title="About me" href="/about">
+              <i class="icon-user icon-large"></i>
+            </a>
+            <a class="visible-phone" title="About me" href="/about">
+              <i class="icon-user icon-large"></i>
+              About me
+            </a>
+          </li>
+          <li>
+            <a class="hidden-phone" href="/atom.xml" title="Atom Feed">
               <i class="icon-rss icon-large"></i>
+            </a>
+            <a class="visible-phone" href="/atom.xml" title="Atom Feed">
+              <i class="icon-rss icon-large"></i>
+              Atom Feed
             </a>
           </li>
         </ul>
@@ -47,19 +76,19 @@
     {{ content }}
   </div>
 
-  <div id="footer">
+  <div id="footer" class="hidden-print">
     <section class="meta">
       <div class="container">
         <div class="row">
-          <div class="span3"></div>
-          <div class="span2">
+          <div class="col-span-3"></div>
+          <div class="col-span-2">
             <a href="https://twitter.com/{{ site.author.twitter }}">
               <i class="icon icon-twitter icon-4x"></i>
               <div>Follow me on Twitter.</div>
             </a>
           </div>
-          <div class="span2"></div>
-          <div class="span2 next">
+          <div class="col-span-2"></div>
+          <div class="col-span-2 next">
             <a href="https://github.com/{{ site.author.github }}">
               <i class="icon icon-github icon-4x"></i>
               <div>
@@ -67,7 +96,7 @@
               </div>
             </a>
           </div>
-          <div class="span3"></div>
+          <div class="col-span-3"></div>
         </div>
       </div>
     </section>
@@ -75,5 +104,6 @@
   {% include analytics.html %}
   {% include gauges.html %}
 </body>
-
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="/js/up.js"></script>
 </html>
