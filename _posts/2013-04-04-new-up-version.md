@@ -13,6 +13,8 @@ So I decided to release a new [UP][1] version. Changes include:
 - Bootstrap collapse plugin (navbar is now fully responsive);
 - Minor tweaks.
 
+![Up 2](http://f.cl.ly/items/3S2m1X2I1V0s0E2P1s38/Captura%20de%20Tela%202013-04-08%20%C3%A0s%2000.37.30.png)
+
 So, update it if you want! It shall be easy, since I was doing it in my
 blog, and then import it back to [UP][1]. If you have any issues, you can
 ping me at twitter or other social network, or even email me.

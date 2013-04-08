@@ -11,7 +11,7 @@ took something from [jekyll-bootstrap](https://github.com/plusjade/jekyll-bootst
 and, of course, I'm using [bootstrap](https://github.com/twitter/bootstrap) as
 a base for whole thing.
 
-![Up](http://i.imgur.com/4bKG5.png)
+![Up 2](http://f.cl.ly/items/3S2m1X2I1V0s0E2P1s38/Captura%20de%20Tela%202013-04-08%20%C3%A0s%2000.37.30.png)
 
 ## Installation
 
@@ -52,6 +52,22 @@ easier.
 All you should have to do is to rename your repository on GitHub to be
 `username.github.com`. Since everything is on the `gh-pages` branch, you
 should be able to see your new site at <http://username.github.com>.
+
+
+## Customizing
+
+You will need node.js' `npm` executable in your `PATH`, so, in your blog folder, run:
+
+```
+npm install
+```
+
+It will install `recess` and `uglify-js` for you. Now, do your changes in `less` and/or `js`
+files, and run `make` to compile the files.
+
+Note: I'm not using any jekyll asset pipeline because it's not supported by github pages, so,
+I preffer to do it by myself.
+
 
 ## Licensing
 
