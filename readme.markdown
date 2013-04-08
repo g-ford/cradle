@@ -43,6 +43,20 @@ address bar. You may change it to whatever you like.
 Again, this is my gravatar, and it shows up in iOS and various other apps
 that use this file as an "icon" for your site.
 
+If you need custom CSS or JS, you will need `node.js'` `npm` executable in
+your `PATH`, as well `recess` and `uglify-js`. To do this, after installed
+`npm`, in your blog folder, run:
+
+```sh
+npm install
+```
+
+It will install `recess` and `uglify-js` executables for you. Now, do your
+changes in `less` and/or `js` files, and run `make` to compile the files.
+
+Note: I'm not using any Jekyll asset pipeline because it's not supported
+by [GitHub Pages](http://pages.github.com), so, I prefer to do it by myself.
+
 
 ## Deployment
 
@@ -52,21 +66,6 @@ easier.
 All you should have to do is to rename your repository on GitHub to be
 `username.github.com`. Since everything is on the `gh-pages` branch, you
 should be able to see your new site at <http://username.github.com>.
-
-
-## Customizing
-
-You will need node.js' `npm` executable in your `PATH`, so, in your blog folder, run:
-
-```
-npm install
-```
-
-It will install `recess` and `uglify-js` for you. Now, do your changes in `less` and/or `js`
-files, and run `make` to compile the files.
-
-Note: I'm not using any jekyll asset pipeline because it's not supported by github pages, so,
-I preffer to do it by myself.
 
 
 ## Licensing
