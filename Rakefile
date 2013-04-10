@@ -3,7 +3,8 @@ require 'rake'
 require 'yaml'
 require 'time'
 require 'open-uri'
-#require "RMagick"
+require 'RMagick'
+require "digest/md5"
 
 SOURCE = "."
 CONFIG = {
@@ -20,7 +21,8 @@ CONFIG = {
 # Usage: rake post title="A Title" [date="2012-02-09"]
 desc "Begin a new post in #{CONFIG['posts']}"
 task :post do
-  abort("rake aborted: '#{CONFIG['posts']}' directory not found.") unless FileTest.directory?(CONFIG['posts'])
+  abort("rake aborted: '#{CONFIG['posts']}' directory not found.") unless FileTest.
+    directory?(CONFIG['posts'])
   title = ENV["title"] || "new-post"
   slug = title.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
   begin
@@ -31,7 +33,8 @@ task :post do
   end
   filename = File.join(CONFIG['posts'], "#{date}-#{slug}.md")
   if File.exist?(filename)
-    abort("rake aborted!") if ask("#{filename} already exists. Do you want to overwrite?", ['y', 'n']) == 'n'
+    abort("rake aborted!") if ask("#{filename} already exists. Do you want to overwrite?",
+      ['y', 'n']) == 'n'
   end
 
   puts "Creating new post: #{filename}"
@@ -49,14 +52,18 @@ task :preview do
   system "jekyll --auto --server"
 end # task :preview
 
-desc "Update icons based on gravatar!"
+desc "Update icons based on your gravatar (define author email in _config.yml)!"
 task :icons do
-  gravatar_id = "7ef3cd04888c6d17f34d43e29ec3d46f"
-  base_url = "https://secure.gravatar.com/avatar/#{gravatar_id}?s=500"
+  puts "Getting author email from _config.yml..."
+  config = YAML.load_file('_config.yml')
+  author_email = config['author']['email']
+  gravatar_id = Digest::MD5.hexdigest(author_email)
+  base_url = "http://www.gravatar.com/avatar/#{gravatar_id}?s=150"
 
   origin = "origin.png"
   File.delete origin if File.exist? origin
 
+  puts "Downloading base image file from gravatar..."
   open(origin, 'wb') do |file|
     file << open(base_url).read
   end
@@ -71,14 +78,15 @@ task :icons do
     File.delete img
   end
 
-  puts "creating favicon.ico"
+  puts "Creating favicon.ico..."
   Magick::Image::read(origin).first.resize(16, 16).write("favicon.ico")
 
   [144, 114, 72, 57].each do |size|
-    puts "creating %d * %d icons" % [size, size]
-    Magick::Image::read(origin).first.resize(size, size).write(name_pre % [size, size])
+    puts "Creating #{name_pre} icon..." % [size, size]
+    Magick::Image::read(origin).first.resize(size, size).
+      write(name_pre % [size, size])
   end
-
+  puts "Cleaning up..."
   File.delete origin
 end
 
