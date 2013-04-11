@@ -1,4 +1,8 @@
-# Up
+> You can take a look at almost-done new version in the
+[bs3 branch](https://github.com/caarlos0/up/tree/bs3)!
+
+Up
+--------------
 
 Up is a clean and beautiful [Bootstrap](http://getbootstrap.com) based layout
 for [Jekyll](https://github.com/mojombo/jekyll).
