@@ -5,7 +5,7 @@ auto: true
 rdiscount:
   extensions: [smart]
 title : Carlos Becker
-production_url : http://caarlos0.github.com
+production_url : http://carlosbecker.com
 description: "Througths, flamewars, utilities, tutorials, codes, projects and other things by Carlos Alexandro Becker."
 disqus_shortname: caarlos0blog
 analytics: UA-32899481-1
@@ -14,3 +14,4 @@ author :
   name : Carlos Alexandro Becker
   github : caarlos0
   twitter : caarlos0
+  email: caarlos0@gmail.com

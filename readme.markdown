@@ -15,11 +15,11 @@ a base for whole thing.
 
 ## Installation
 
-- Install Jekyll: `gem install jekyll`
 - Fork this repository
 - Rename it to `YOUR-USER.github.com`
 - Clone it: `git clone https://github.com/YOUR-USER/YOUR-USER.github.com`
-- Run the jekyll server in the blog folder: `rake preview`.
+- Run the bundler in the blog folder to get the dependencies: `bundle`
+- Run the jekyll server: `rake preview`.
 
 You should have a server up and running locally at <http://localhost:4000>.
 
@@ -43,19 +43,30 @@ address bar. You may change it to whatever you like.
 Again, this is my gravatar, and it shows up in iOS and various other apps
 that use this file as an "icon" for your site.
 
+### Custom CSS/JS
+
 If you need custom CSS or JS, you will need `node.js'` `npm` executable in
 your `PATH`, as well `recess` and `uglify-js`. To do this, after installed
-`npm`, in your blog folder, run:
-
-```sh
-npm install
-```
+`npm`, in your blog folder, run: `npm install`.
 
 It will install `recess` and `uglify-js` executables for you. Now, do your
 changes in `less` and/or `js` files, and run `make` to compile the files.
 
 Note: I'm not using any Jekyll asset pipeline because it's not supported
 by [GitHub Pages](http://pages.github.com), so, I prefer to do it by myself.
+
+
+### Update `favicon` and `apple-precomposed` icons based on gravatar
+
+First, be sure you have the author email configured in `_config.yml`,
+then, just run:
+
+```sh
+rake icons
+```
+
+The script will generate your email hash and get your gravatar, then, using
+RMagick, it will create all needed icons.
 
 
 ## Deployment
