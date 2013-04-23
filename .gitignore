@@ -1,1 +1,15 @@
-_site
+_site/*
+_theme_packages/*
+
+Thumbs.db
+.DS_Store
+
+!.gitkeep
+
+.rbenv-version
+.rvmrc
+
+*~
+_assets/bootstrap/tests
+node_modules/
+

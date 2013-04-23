@@ -1,5 +1,5 @@
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     classifier (1.3.3)
       fast-stemmer (>= 1.0.0)
@@ -20,7 +20,9 @@ GEM
     pygments.rb (0.3.7)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
+    rake (10.0.4)
     rdiscount (1.6.8)
+    rmagick (2.13.2)
     syntax (1.0.0)
     yajl-ruby (1.1.0)
 
@@ -29,4 +31,6 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll
+  rake
   rdiscount
+  rmagick

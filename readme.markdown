@@ -15,15 +15,15 @@ took something from [jekyll-bootstrap](https://github.com/plusjade/jekyll-bootst
 and, of course, I'm using [bootstrap](https://github.com/twitter/bootstrap) as
 a base for whole thing.
 
-![Up](http://i.imgur.com/4bKG5.png)
+![Up 2](http://f.cl.ly/items/3S2m1X2I1V0s0E2P1s38/Captura%20de%20Tela%202013-04-08%20%C3%A0s%2000.37.30.png)
 
 ## Installation
 
-- Install Jekyll: `gem install jekyll`
 - Fork this repository
 - Rename it to `YOUR-USER.github.com`
 - Clone it: `git clone https://github.com/YOUR-USER/YOUR-USER.github.com`
-- Run the jekyll server in the blog folder: `rake preview`.
+- Run the bundler in the blog folder to get the dependencies: `bundle`
+- Run the jekyll server: `rake preview`.
 
 You should have a server up and running locally at <http://localhost:4000>.
 
@@ -47,6 +47,31 @@ address bar. You may change it to whatever you like.
 Again, this is my gravatar, and it shows up in iOS and various other apps
 that use this file as an "icon" for your site.
 
+### Custom CSS/JS
+
+If you need custom CSS or JS, you will need `node.js'` `npm` executable in
+your `PATH`, as well `recess` and `uglify-js`. To do this, after installed
+`npm`, in your blog folder, run: `npm install`.
+
+It will install `recess` and `uglify-js` executables for you. Now, do your
+changes in `less` and/or `js` files, and run `make` to compile the files.
+
+Note: I'm not using any Jekyll asset pipeline because it's not supported
+by [GitHub Pages](http://pages.github.com), so, I prefer to do it by myself.
+
+
+### Update `favicon` and `apple-precomposed` icons based on gravatar
+
+First, be sure you have the author email configured in `_config.yml`,
+then, just run:
+
+```sh
+rake icons
+```
+
+The script will generate your email hash and get your gravatar, then, using
+RMagick, it will create all needed icons.
+
 
 ## Deployment
 
@@ -56,6 +81,7 @@ easier.
 All you should have to do is to rename your repository on GitHub to be
 `username.github.com`. Since everything is on the `gh-pages` branch, you
 should be able to see your new site at <http://username.github.com>.
+
 
 ## Licensing
 
