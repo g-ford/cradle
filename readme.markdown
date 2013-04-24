@@ -1,5 +1,5 @@
-> You can take a look at almost-done new version in the
-[bs3 branch](https://github.com/caarlos0/up/tree/bs3)!
+> This is the new WIP version. You can take a look at old 1.4.0 release
+[here](https://github.com/caarlos0/up/tree/v1.4.0).
 
 Up
 --------------
