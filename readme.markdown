@@ -97,3 +97,11 @@ If you'd like give [me](http://github.com/caarlos0),
 [fat](https://github.com/fat) and [mdo](https://github.com/mdo) (from
 [bootstrap](https://github.com/twitter/bootstrap)) credit somewhere on your
 all-new blog or tweet a shout out to us, well hey, sure we'll take it.
+
+## Donate
+
+You can also thank me doing a donation =)
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DXEJBUD2KYT7L)
+
+Thanks.
