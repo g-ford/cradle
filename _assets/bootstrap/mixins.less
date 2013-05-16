@@ -340,7 +340,7 @@
 // Dividers (basically an hr) within dropdowns and nav lists
 .nav-divider(@top: #e5e5e5, @bottom: #fff) {
   height: 2px; // 1px for background, one for border
-  margin: ((@line-height-base / 2) - 1) 0;
+  margin: ((@line-height-computed / 2) - 1) 0;
   overflow: hidden;
   background-color: @top;
   border-bottom: 1px solid @bottom;
@@ -350,7 +350,8 @@
 // -------------------------
 // Easily pump out default styles, as well as :hover, :focus, :active,
 // and disabled options for all buttons
-.btn-pseudo-states(@background, @border) {
+.btn-pseudo-states(@color, @background, @border) {
+  color: @color;
   background-color: @background;
   border-color: @border;
 
@@ -411,16 +412,20 @@
 }
 // Generate the columns
 .make-column(@columns) {
-  @media (min-width: @grid-float-breakpoint) {
-    float: left;
-    // Calculate width based on number of columns available
-    width: percentage(@columns / @grid-columns);
-  }
+  position: relative;
+  // Float and set width: 100%; for easy stacking on mobile devices
+  float: left;
+  width: 100%;
   // Prevent columns from collapsing when empty
   min-height: 1px;
-  // Set inner padding as gutters instead of margin
+  // Inner gutter via padding
   padding-left:  (@grid-gutter-width / 2);
   padding-right: (@grid-gutter-width / 2);
+
+  // Calculate width based on number of columns available
+  @media (min-width: @grid-float-breakpoint) {
+    width: percentage((@columns / @grid-columns));
+  }
 }
 // Generate the column offsets
 .make-column-offset(@columns) {
@@ -438,28 +443,41 @@
     right: percentage((@columns / @grid-columns));
   }
 }
-// Small, mobile-first columns
-.make-small-column(@columns) {
-  position: relative;
-  float: left;
-  // Prevent columns from collapsing when empty
-  min-height: 1px;
-  // Set inner padding as gutters instead of margin
-  padding-left:  (@grid-gutter-width / 2);
-  padding-right: (@grid-gutter-width / 2);
-}
 
-
-
-// The Grid
+// Small grid columns
 .generate-grid-columns(@grid-columns) {
 
-  // Default columns
-  .col-span-X (@index) when (@index > 0) {
-    .col-span-@{index} { .col-span-(@index); }
-    .col-span-X((@index - 1));
+  .col-sm-X (@index) when (@index > 0) {
+    .col-sm-@{index} { .col-sm-(@index); }
+    .col-sm-X((@index - 1));
   }
-  .col-span-X(0) {}
+  .col-sm-X (0) {}
+
+  // Generate columns
+  .col-sm-X(@grid-columns);
+
+  // Apply the styles
+  .col-sm-(@columns) {
+    width: percentage((@columns / @grid-columns));
+  }
+}
+
+// Large grid columns
+.generate-large-grid-columns(@grid-columns) {
+
+  .col-lg-X (@index) when (@index > 0) {
+    .col-lg-@{index} { .col-lg-(@index); }
+    .col-lg-X((@index - 1));
+  }
+  .col-lg-X (0) {}
+
+  // Generate the columns
+  .col-lg-X(@grid-columns);
+
+  // Apply the styles
+  .col-lg-(@columns) {
+    width: percentage((@columns / @grid-columns));
+  }
 
   // Offsets (gaps between columns)
   .col-offset-X (@index) when (@index > 0) {
@@ -483,9 +501,6 @@
   .col-pull-X (0) {}
 
   // Apply the styles
-  .col-span-(@columns) {
-    width: percentage((@columns / @grid-columns));
-  }
   .col-offset-(@columns) {
     margin-left: percentage((@columns / @grid-columns));
   }
@@ -497,30 +512,11 @@
   }
 
   // Generate .spanX and .offsetX
-  .col-span-X(@grid-columns);
   .col-offset-X(@grid-columns);
   .col-push-X(@grid-columns);
   .col-pull-X(@grid-columns);
 }
 
-// Small device grid
-.generate-small-grid-columns(@grid-columns) {
-
-  // Deterimine the classes
-  .col-small-span-X (@index) when (@index > 0) {
-    .col-small-span-@{index} { .col-small-span-(@index); }
-    .col-small-span-X((@index - 1));
-  }
-  .col-small-span-X(0) {}
-
-  // Specify widths
-  .col-small-span-(@columns) {
-    width: percentage((@columns / @grid-columns));
-  }
-
-  // Generate the CSS
-  .col-small-span-X(@grid-columns);
-}
 
 
 // Framework mixins
