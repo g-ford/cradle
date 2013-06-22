@@ -49,7 +49,7 @@ end # task :post
 
 desc "Launch preview environment"
 task :preview do
-  system "jekyll --watch serve"
+  system "jekyll serve"
 end # task :preview
 
 desc "Update icons based on your gravatar (define author email in _config.yml)!"
