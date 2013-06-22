@@ -9,7 +9,7 @@ build:
 	@echo "Compiling and Compressing Less and CSS files with Recess... ${CHECK} Done"
 	@cat _assets/bootstrapjs/* > js/up.js.tmp
 	@cat _assets/up.js >> js/up.js.tmp
-	@uglifyjs -nc  js/up.js.tmp > js/up.js
+	@uglifyjs js/up.js.tmp > js/up.js
 	@rm -rf js/up.js.tmp
 	@echo "Compiling and Compressing JS files with uglify-js... ${CHECK} Done"
 	@echo "${HR}"

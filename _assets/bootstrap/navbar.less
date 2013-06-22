@@ -48,6 +48,12 @@
     color: @navbar-link-disabled-color;
     background-color: @navbar-link-disabled-bg;
   }
+
+  // Right aligned contents
+  // Make them full width first so that they align properly on mobile
+  &.pull-right {
+    width: 100%;
+  }
 }
 
 
@@ -135,7 +141,7 @@
 // Navbar form
 .navbar-form {
   .form-inline();
-  .navbar-vertical-align(34px); // Vertically center in navbar
+  .navbar-vertical-align(@input-height-base); // Vertically center in navbar
 }
 
 // Dropdown menus
@@ -274,14 +280,14 @@
 // Responsive navbar
 // --------------------------------------------------
 
-@media screen and (min-width: @screen-tablet) {
+@media screen and (min-width: @grid-float-breakpoint) {
 
   .navbar-brand {
     float: left;
-    margin-left: -5px;
+    margin-left: -15px;
     margin-right: 5px;
   }
-  .navbar .nav {
+  .navbar-nav {
     float: left;
     // undo margin to make nav extend full height of navbar
     margin-top: 0;
@@ -296,6 +302,7 @@
 
     &.pull-right {
       float: right;
+      width: auto;
     }
   }
 

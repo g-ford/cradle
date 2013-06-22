@@ -15,13 +15,13 @@ cd $BS_HOME
 git checkout 3.0.0-wip
 git pull origin 3.0.0-wip
 cp -rf less/* $UP_HOME/_assets/bootstrap/
-cp -f js/bootstrap-{transition,collapse}.js $UP_HOME/_assets/bootstrapjs/
+cp -f js/{transition,collapse}.js $UP_HOME/_assets/bootstrapjs/
 
 echo "updating font awesome..."
 cd $FA_HOME
 git pull origin master
-cp -f build/assets/font-awesome/less/*.less $UP_HOME/_assets/fontawesome/
-cp -rf build/assets/font-awesome/font/* $UP_HOME/font/
+cp -f less/*.less $UP_HOME/_assets/fontawesome/
+cp -rf font/* $UP_HOME/font/
 
 echo "building..."
 cd $UP_HOME
