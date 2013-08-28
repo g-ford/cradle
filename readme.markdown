@@ -79,9 +79,8 @@ You should deploy with [GitHub Pages](http://pages.github.com)- it's just
 easier.
 
 All you should have to do is to rename your repository on GitHub to be
-`username.github.com`. Since everything is on the `gh-pages` branch, you
-should be able to see your new site at <http://username.github.com>.
-
+`username.github.io`. Since this is a Jekyll project, you
+should be able to see your new site at <http://username.github.io>.
 
 ## Licensing
 
