@@ -20,8 +20,8 @@ a base for whole thing.
 ## Installation
 
 - [Fork this repository](https://github.com/caarlos0/up/fork)
-- Rename it to `YOUR-USER.github.com`
-- Clone it: `git clone https://github.com/YOUR-USER/YOUR-USER.github.com`
+- Rename it to `YOUR-USER.github.io`
+- Clone it: `git clone https://github.com/YOUR-USER/YOUR-USER.github.io`
 - Run the bundler in the blog folder to get the dependencies: `bundle`
 - Run the jekyll server: `rake preview`.
 
