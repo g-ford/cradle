@@ -1,0 +1,22 @@
+{
+  "name": "Carlos Becker Blog",
+  "version": "0.0.1",
+  "authors": [
+    "Carlos Alexandro Becker <caarlos0@gmail.com>"
+  ],
+  "description": "Carlos Becker personal blog at carlosbecker.com",
+  "license": "MIT",
+  "homepage": "http://carlosbecker.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.0.0",
+    "font-awesome": "~3.2.1"
+  }
+}
