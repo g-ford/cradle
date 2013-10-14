@@ -13,3 +13,5 @@ Thumbs.db
 _assets/bootstrap/tests
 node_modules/
 
+bower_components/
+components/

@@ -1,63 +1,64 @@
 // Core variables and mixins
-@import "/_assets/bootstrap/variables.less"; // Modify this for custom colors, font-sizes, etc
-@import "/_assets/bootstrap/mixins.less";
+@import "/bower_components/bootstrap/less/variables.less";
+@import "/bower_components/bootstrap/less/mixins.less";
 
 // Reset
-@import "/_assets/bootstrap/normalize.less";
-@import "/_assets/bootstrap/print.less";
+@import "/bower_components/bootstrap/less/normalize.less";
+@import "/bower_components/bootstrap/less/print.less";
 
 // Core CSS
-@import "/_assets/bootstrap/scaffolding.less";
-@import "/_assets/bootstrap/type.less";
-@import "/_assets/bootstrap/code.less";
-@import "/_assets/bootstrap/grid.less";
+@import "/bower_components/bootstrap/less/scaffolding.less";
+@import "/bower_components/bootstrap/less/type.less";
+@import "/bower_components/bootstrap/less/code.less";
+@import "/bower_components/bootstrap/less/grid.less";
 
-@import "/_assets/bootstrap/tables.less";
-@import "/_assets/bootstrap/forms.less";
-@import "/_assets/bootstrap/buttons.less";
+@import "/bower_components/bootstrap/less/tables.less";
+@import "/bower_components/bootstrap/less/forms.less";
+@import "/bower_components/bootstrap/less/buttons.less";
 
 // Components: common
-@import "/_assets/bootstrap/component-animations.less";
-// @import "/_assets/bootstrap/glyphicons.less";
-// @import "/_assets/bootstrap/dropdowns.less";
-@import "/_assets/bootstrap/list-group.less";
-@import "/_assets/bootstrap/panels.less";
-@import "/_assets/bootstrap/wells.less";
-// @import "/_assets/bootstrap/close.less";
+@import "/bower_components/bootstrap/less/component-animations.less";
+@import "/bower_components/bootstrap/less/input-groups.less";
+@import "/bower_components/bootstrap/less/dropdowns.less";
+@import "/bower_components/bootstrap/less/list-group.less";
+@import "/bower_components/bootstrap/less/panels.less";
+@import "/bower_components/bootstrap/less/wells.less";
+@import "/bower_components/bootstrap/less/close.less";
 
 // Components: Nav
-@import "/_assets/bootstrap/navs.less";
-@import "/_assets/bootstrap/navbar.less";
-// @import "/_assets/bootstrap/button-groups.less";
-// @import "/_assets/bootstrap/breadcrumbs.less";
-// @import "/_assets/bootstrap/pagination.less";
-// @import "/_assets/bootstrap/pager.less";
+@import "/bower_components/bootstrap/less/navs.less";
+@import "/bower_components/bootstrap/less/navbar.less";
+// @import "/bower_components/bootstrap/less/button-groups.less";
+// @import "/bower_components/bootstrap/less/breadcrumbs.less";
+// @import "/bower_components/bootstrap/less/pagination.less";
+// @import "/bower_components/bootstrap/less/pager.less";
 
 // Components: Popovers
-// @import "/_assets/bootstrap/modals.less";
-// @import "/_assets/bootstrap/tooltip.less";
-// @import "/_assets/bootstrap/popovers.less";
+// @import "/bower_components/bootstrap/less/modals.less";
+// @import "/bower_components/bootstrap/less/tooltip.less";
+// @import "/bower_components/bootstrap/less/popovers.less";
 
 // Components: Misc
-// @import "/_assets/bootstrap/alerts.less";
-@import "/_assets/bootstrap/thumbnails.less";
-// @import "/_assets/bootstrap/media.less";
-// @import "/_assets/bootstrap/labels.less";
-// @import "/_assets/bootstrap/badges.less";
-// @import "/_assets/bootstrap/progress-bars.less";
-// @import "/_assets/bootstrap/accordion.less";
-// @import "/_assets/bootstrap/carousel.less";
-// @import "/_assets/bootstrap/jumbotron.less";
+// @import "/bower_components/bootstrap/less/alerts.less";
+@import "/bower_components/bootstrap/less/thumbnails.less";
+@import "/bower_components/bootstrap/less/media.less";
+// @import "/bower_components/bootstrap/less/labels.less";
+// @import "/bower_components/bootstrap/less/badges.less";
+// @import "/bower_components/bootstrap/less/progress-bars.less";
+// @import "/bower_components/bootstrap/less/accordion.less";
+// @import "/bower_components/bootstrap/less/carousel.less";
+// @import "/bower_components/bootstrap/less/jumbotron.less";
 
 // Utility classes
-@import "/_assets/bootstrap/utilities.less"; // Has to be last to override when necessary
-@import "/_assets/bootstrap/responsive-utilities.less";
+@import "/bower_components/bootstrap/less/utilities.less"; // Has to be last to override when necessary
+@import "/bower_components/bootstrap/less/responsive-utilities.less";
 
 // font-awesome
-@import "/_assets/fontawesome/font-awesome.less";
+@import "/bower_components/font-awesome/less/font-awesome.less";
 
 // pygments
 @import "/_assets/pygments.less";
+
 
 @font-family-sans-serif: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 @font-size-base: 15px;
@@ -76,7 +77,9 @@ h2,h3,h4,h5,h6 {
   border-bottom: 1px solid #f5f5f5;
   padding: 5px;
 }
-section.content {
+
+article,
+.content {
   height: 100%;
   min-height: 100%;
   padding: 10px;
@@ -155,8 +158,8 @@ ul.listing {
   }
 }
 
-div.navbar,
-div.navbar a.brand {
+.navbar-blog,
+.navbar-blog a.brand {
   font-weight: 100;
   text-transform: uppercase;
 }

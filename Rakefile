@@ -49,7 +49,7 @@ end # task :post
 
 desc "Launch preview environment"
 task :preview do
-  system "jekyll serve --watch"
+  system "bundle exec jekyll serve --watch --drafts"
 end # task :preview
 
 desc "Update icons based on your gravatar (define author email in _config.yml)!"
@@ -79,7 +79,7 @@ task :icons do
   end
 
   puts "Creating favicon.ico..."
-  Magick::Image::read(origin).first.resize(16, 16).write("favicon.ico")
+  Magick::Image::read(origin).first.resize(32, 32).write("favicon.ico")
 
   [144, 114, 72, 57].each do |size|
     puts "Creating #{name_pre} icon..." % [size, size]

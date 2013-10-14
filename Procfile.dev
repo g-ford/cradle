@@ -1,0 +1,2 @@
+web: rake preview
+assets: grunt watch
