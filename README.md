@@ -15,7 +15,7 @@ took something from [jekyll-bootstrap](https://github.com/plusjade/jekyll-bootst
 and, of course, I'm using [bootstrap](https://github.com/twitter/bootstrap) as
 a base for whole thing.
 
-![Up 2](http://f.cl.ly/items/3S2m1X2I1V0s0E2P1s38/Captura%20de%20Tela%202013-04-08%20%C3%A0s%2000.37.30.png)
+![Up 2](http://f.cl.ly/items/1k0B3m21451e0G1i3u0F/up_v2.png)
 
 ## Installation
 
