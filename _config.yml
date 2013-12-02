@@ -6,6 +6,10 @@ rdiscount:
 kramdown:
  use_coderay: true
  coderay:
+  coderay_wrap: div
+  coderay_line_numbers: nil
+  coderay_tab_width: 4
+  coderay_bold_every: 10
   coderay_css: class
 title : Let's Build a Compiler (in Haskell)
 production_url : http://cradle.github.io
@@ -14,6 +18,7 @@ exclude: ['bower_components', 'node_modules', 'script']
 # disqus_shortname: caarlos0blog
 # analytics: UA-32899481-1
 # gauges: 50f2b533613f5d7c8000000c
+baseurl : cradle
 author :
   name : Geoff Ford
   github : alephnullplex
