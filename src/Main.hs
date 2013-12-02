@@ -19,3 +19,8 @@ addOperation x
 
 expression (x:[]) = term x
 expression (x:y:zs) = (addOperation y) (expression [x]) (expression zs)
+
+emit expr = case expr of
+	Num x -> [x]
+	Add x y -> emit x ++ " + " ++ emit y
+	Sub x y -> emit x ++ " - " ++ emit y
