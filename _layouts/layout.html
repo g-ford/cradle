@@ -27,8 +27,33 @@
 <body>
   {% include navbar.html %}
 
+
   <div class="container">
-    {{ content }}
+    <div class="row row-offcanvas row-offcanvas-right">
+
+      <div class="col-xs-12 col-sm-9">
+        <p class="pull-right visible-xs">
+          <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+        </p>
+        {{ content }}
+      </div>
+
+
+      <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+        <div>
+          <h4>Chapters</h4>
+          <div class="list-group">
+          {% for node in site.pages %}
+            {% if node.group == 'book' %}
+              <a class="list-group-item {% if page.url == node.url %}active{% endif %}" href="{{ node.url }}">{{ node.title }}</a>
+            {% endif %}
+          {% endfor %}
+          </div>
+        </div>
+      </div>
+    
+
+    </div>
   </div>
 
   {% include footer.html %}

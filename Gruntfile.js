@@ -7,6 +7,8 @@ module.exports = function(grunt) {
           'bower_components/jquery/jquery.min.js',
           'bower_components/bootstrap/js/transition.js',
           'bower_components/bootstrap/js/collapse.js',
+          'bower_components/bootstrap/js/dropdown.js',
+          'bower_components/bootstrap/js/affix.js',
           '_assets/up.js'
         ],
         dest: 'js/up.js'

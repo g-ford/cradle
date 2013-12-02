@@ -1,12 +1,11 @@
 {
-  "name": "Carlos Becker Blog",
+  "name": "Let's Build a Compiler",
   "version": "0.0.1",
   "authors": [
-    "Carlos Alexandro Becker <caarlos0@gmail.com>"
+    "Geoff Ford <g_ford@hotmail.com>"
   ],
-  "description": "Carlos Becker personal blog at carlosbecker.com",
   "license": "MIT",
-  "homepage": "http://carlosbecker.com",
+  "homepage": "http://cradle.github.io",
   "private": true,
   "ignore": [
     "**/.*",

@@ -1,16 +1,20 @@
-markdown: rdiscount
-pygments: true
-permalink: /posts/:title
+markdown: kramdown
+pygments: false
+permalink: /chapters/:title
 rdiscount:
   extensions: [smart]
-title : Carlos Becker
-production_url : http://carlosbecker.com
-description: "Througths, flamewars, utilities, tutorials, codes, projects and other things by Carlos Alexandro Becker."
-disqus_shortname: caarlos0blog
-analytics: UA-32899481-1
-gauges: 50f2b533613f5d7c8000000c
+kramdown:
+ use_coderay: true
+ coderay:
+  coderay_css: class
+title : Let's Build a Compiler (in Haskell)
+production_url : http://cradle.github.io
+exclude: ['bower_components', 'node_modules', 'script']
+# description: "Througths, flamewars, utilities, tutorials, codes, projects and other things by Carlos Alexandro Becker."
+# disqus_shortname: caarlos0blog
+# analytics: UA-32899481-1
+# gauges: 50f2b533613f5d7c8000000c
 author :
-  name : Carlos Alexandro Becker
-  github : caarlos0
-  twitter : caarlos0
-  email: caarlos0@gmail.com
+  name : Geoff Ford
+  github : alephnullplex
+  email: g_ford@hotmail.com
