@@ -43,7 +43,8 @@
         <div id="chapter-list" data-spy="affix" data-offset-top="0">
           <h4>Chapters</h4>
           <div class="list-group" >
-          {% for node in site.pages %}
+          {% assign sorted_pages = site.pages | sort:"name" %}
+          {% for node in sorted_pages %}
             {% if node.group == 'book' %}
               <a class="list-group-item {% if page.url == node.url %}active{% endif %}" href="{{ site.baseurl }}{{ node.url }}">{{ node.title }}</a>
             {% endif %}
