@@ -10,7 +10,7 @@
 
   <link rel="alternate" type="application/rss+xml" href="/atom.xml" />
 
-  <link href="/{{ site.baseurl }}/css/up.css" rel="stylesheet">
+  <link href="{{ site.baseurl }}/css/up.css" rel="stylesheet">
 
   <!--[if lt IE 9]>
   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -45,7 +45,7 @@
           <div class="list-group">
           {% for node in site.pages %}
             {% if node.group == 'book' %}
-              <a class="list-group-item {% if page.url == node.url %}active{% endif %}" href="{{ node.url }}">{{ node.title }}</a>
+              <a class="list-group-item {% if page.url == node.url %}active{% endif %}" href="{{ site.baseurl }}{{ node.url }}">{{ node.title }}</a>
             {% endif %}
           {% endfor %}
           </div>
