@@ -28,6 +28,11 @@
 
   .row-offcanvas-right.active {
     right: 50%; /* 6 columns */
+    position: relative;
+
+    .affix {
+      right: 20px;
+    }
   }
 
   .row-offcanvas-left.active {
@@ -39,4 +44,12 @@
     top: 0;
     width: 50%; /* 6 columns */
   }
+
+  #menu-toggle {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    z-index: 9999;
+  }
+
 }
