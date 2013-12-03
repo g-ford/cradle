@@ -24,3 +24,14 @@ emit expr = case expr of
 	Num x -> [x]
 	Add x y -> emit x ++ " + " ++ emit y
 	Sub x y -> emit x ++ " - " ++ emit y
+
+emitLn s = "\t" ++ s ++ "\n"
+
+add = emitLn "ADD eax, ebx"
+sub = emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
+pushEax = emitLn "MOV ebx, eax"
+
+emitAsm expr = case expr of 
+	Num a   -> emitLn ("MOV eax, " ++ [a])
+	Add a b -> emitAsm a ++  pushEax ++ emitAsm b ++ add
+	Sub a b -> emitAsm a ++  pushEax ++ emitAsm b ++ sub
