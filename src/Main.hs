@@ -17,9 +17,9 @@ addOperation x
   | x == '-' = Sub
   | otherwise = expected "AddOp"
 
+
 expression (x:[]) = term x
 expression (x:y:zs) = (addOperation y) (expression [x]) (expression zs)
-
 
 
 -- Emitter Funtions
@@ -31,13 +31,14 @@ emit expr = case expr of
 
 emitLn s = "\t" ++ s ++ "\n"
 
-dd = emitLn "ADD ebx, eax"
-sub = emitLn "SUB ebx, eax"
-pushEax = emitLn "MOV ebx, eax"
+popEbx = emitLn "POP ebx"
+pushEax = emitLn "PUSH eax"
+add = popEbx ++ emitLn "ADD eax, ebx"
+sub = popEbx ++ emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
 
 emitAsm expr = case expr of 
 	Num a   -> emitLn ("MOV eax, " ++ [a])
-	Add a b -> emitAsm a ++  pushEax ++ emitAsm b ++ add
-	Sub a b -> emitAsm a ++  pushEax ++ emitAsm b ++ sub
+	Add a b -> emitAsm b ++  pushEax ++ emitAsm a ++ add
+	Sub a b -> emitAsm b ++  pushEax ++ emitAsm a ++ sub
 
 parseAndEmit = emitAsm . expression
