@@ -19,6 +19,7 @@ addOperation x
 
 
 expression (x:[]) = term x
+expression (a:b:c:d:ds) = (addOperation d) (expression [a,b,c]) (expression ds)
 expression (x:y:zs) = (addOperation y) (expression [x]) (expression zs)
 
 
