@@ -117,7 +117,55 @@ Ok, modules loaded: Main.
 "1+1*** Exception: AddOp expected
 ~~~
 
-TODO: link to 
+## Adding Types
+
+Handling and managing the parsed content into strings is not going to very feasible for much longer.  We'll introduce some types to store our values that can then later be processed to produce the output needed, whether it be raw assembly or another target such as LLVM.
+
+Let's look back at our definition of an `expression`
+
+`<expression> ::= <term>[<addOperation><term>]*`
+
+Again a recursive definition leads to a recursive data type definition.  Our definiton says that we can have a single number, or we can add or subtract any two sub-expression.  This is quite literally expressed in the following data type.
+
+~~~ Haskell
+data Expression = 
+  Num Int 
+  | Add Expression Expression
+  | Sub Expression Expression
+  deriving (Show) 
+~~~ 
+
+Now we can rework our functions to us the new type.  `term` is just wrapping the result in the new type.  Similarly `addOperation` is returning the appropriate value constructor.  `expression` will need to shuffle around to accomodate the argument ordering.
+
+~~~ Haskell
+term x
+  | isDigit x = Num x
+  | otherwise = expected "Digit"
+
+addOperation x
+  | x == '+' = Add
+  | x == '-' = Sub
+  | otherwise = expected "AddOp"
+
+expression (x:[]) = term x
+expression (x:y:zs) = (addOperation y) (expression [x]) (expression zs)
+~~~
+
+Let's play with it in GHCi and see what results we have now.
+
+~~~
+Prelude> :l Main.hs
+[1 of 1] Compiling Main             ( Main.hs, interpreted )
+Ok, modules loaded: Main.
+*Main> expression "1+1-2"
+Add (Num '1') (Sub (Num '1') (Num '2'))
+*Main> expression "1+1*2"
+Add (Num '1') *** Exception: AddOp expected
+*Main> expression "1+a"
+Add (Num '1') *** Exception: Digit expected
+~~~
+
+Those with a lisp background, or any of it's variants, might be having a light bulb moment seeing that output.  
 
 
 

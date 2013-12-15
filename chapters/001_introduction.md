@@ -15,15 +15,5 @@ We will be following the general approach and outline that is presented in [1] a
 
 It is assumed that the reader has a basic knowledge of programming, in any langauge, including the ability to navigate the command line.  I am a software engineer, not a computer scientist, so I will be explaining many of the concepts in a manner that makes sense to me but may not necessarily be 100% correct at a theoretical level.  Similarly, I am not a Haskell expert so the implementation will likely not be the most efficient or idiomatic.
 
-## The Structure of a Compiler
 
-### Tokenisers, Lexers and Parsers
-
-### Abstract Syntax Tree
-
-### Optimzers
-
-### Code Generators
-
-#### Compilers vs. Interpreters
 
