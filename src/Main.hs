@@ -24,13 +24,12 @@ assign :: Parser (Char, Expression)
 assign = letter <+-> literal '=' <+> expression
 
 expression :: Parser Expression
-expression = term <+> addOp <+> term >>> buildOp
+expression = term +> expression'
+expression' e = addOp <+> term >>> buildOp e +> expression'
+            <|> result e
 
-buildOp :: ((Expression, Char), Expression) -> Expression
-buildOp ((termA, op), termB)
-	| op == '+' = Add termA termB
-	| op == '-' = Sub termA termB
-	| otherwise = expected "add operation"
+buildOp :: Expression -> ((Expression -> Expression -> Expression), Expression) -> Expression
+buildOp expressionA (op, expressionB) = op expressionA expressionB
 
 term :: Parser Expression
 term = digit >>> Num
@@ -54,8 +53,12 @@ alphanum = digit <|> letter
 literal :: Char -> Parser Char
 literal c = char <=> (==c)
 
-addOp :: Parser Char
-addOp = literal '+' <|> literal '-'
+result :: a -> Parser a
+result a cs = Just(a,cs)
+
+addOp :: Parser (Expression -> Expression -> Expression)
+addOp = literal '+' >>> (\_ -> Add)
+    <|> literal '-' >>> (\_ -> Sub)
 
 
 -- Given a parser and a predicate return the parser only if it satisfies the predicate.
@@ -104,6 +107,14 @@ infixl 5 >>>
 	case parser input of
 		Nothing -> Nothing
 		Just (resultA, remainder) -> Just ((transformer resultA), remainder)
+
+-- Extract a parsers result	
+infix 4 +>
+(+>) :: Parser a -> (a -> Parser b) -> Parser b
+(parser +> function) input = 
+	case parser input of
+		Nothing -> Nothing
+		Just (a, cs) -> function a cs
 
 -- Combine two parsers using a 'or' type operation        
 infixl 3 <|>
