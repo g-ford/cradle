@@ -14,14 +14,26 @@ type Parser a = String -> Maybe (a, String)
 
 expected x = error $ x ++ " expected"
 
-
 parse :: String -> Assign
 parse s = Assign id expr
     where (id, expr) = case assign s of 
             Nothing -> error "Invalid assignment"
-            Just ((a, b), _) -> (a, Num b)
+            Just ((a, b), _) -> (a, b)
 
+assign :: Parser (Char, Expression)
+assign = letter <+-> literal '=' <+> expression
 
+expression :: Parser Expression
+expression = term <+> addOp <+> term >>> buildOp
+
+buildOp :: ((Expression, Char), Expression) -> Expression
+buildOp ((termA, op), termB)
+	| op == '+' = Add termA termB
+	| op == '-' = Sub termA termB
+	| otherwise = expected "add operation"
+
+term :: Parser Expression
+term = digit >>> Num
 
 char :: Parser Char
 char [] = Nothing
@@ -42,8 +54,8 @@ alphanum = digit <|> letter
 literal :: Char -> Parser Char
 literal c = char <=> (==c)
 
-assign :: Parser (Char, Char)
-assign = letter <+-> literal '=' <+> digit
+addOp :: Parser Char
+addOp = literal '+' <|> literal '-'
 
 
 -- Given a parser and a predicate return the parser only if it satisfies the predicate.
@@ -54,31 +66,44 @@ infix 7 <=>
         Nothing       -> Nothing 
         Just(a,rest)  -> if (predicate a) then Just(a,rest) else Nothing
 
+
+-- Combine two parser together pairing their results up in a tuple
 infixl 6 <+>
 (<+>) :: Parser a -> Parser b -> Parser (a, b)
-(m <+> n) cs = case m cs of
-    Nothing -> Nothing
-    Just (a, cs') -> case n cs' of
-        Nothing -> Nothing
-        Just (b, cs2) -> Just((a, b), cs2)
+(parserA <+> parserB) input = 
+	case parserA input of
+	    Nothing -> Nothing
+	    Just (resultA, remainder) -> case parserB remainder of
+	        Nothing -> Nothing
+        	Just (resultB, cs) -> Just((resultA, resultB), cs)
 
 -- Sequence operator that discards the second result 
 infixl 6 <+-> 
 (<+-> ) :: Parser a -> Parser b -> Parser a
-(m <+->  n) cs = case m cs of
-    Nothing -> Nothing
-    Just (a, cs') -> case n cs' of
-        Nothing -> Nothing
-        Just (b, cs2) -> Just(a, cs2)
+(parserA <+->  parserB) input = 
+	case parserA input of
+	    Nothing -> Nothing
+	    Just (resultA, remainder) -> case parserB remainder of
+	        Nothing -> Nothing
+	        Just (_, cs) -> Just(resultA, cs)
 
 -- Sequence operator that discards the first result       
 infixl 6 <-+> 
 (<-+> ) :: Parser a -> Parser b -> Parser b
-(m <-+>  n) cs = case m cs of
-    Nothing -> Nothing
-    Just (a, cs') -> case n cs' of
-        Nothing -> Nothing
-        Just (b, cs2) -> Just(b, cs2) 
+(parserA <-+>  parserB) input = 
+	case parserA input of
+	    Nothing -> Nothing
+	    Just (resultA, remainder) -> case parserB remainder of
+	        Nothing -> Nothing
+	        Just (resultB, cs) -> Just(resultB, cs) 
+
+-- Transform a parsers result
+infixl 5 >>>
+(>>>) :: Parser a -> (a -> b) -> Parser b
+(parser >>> transformer) input = 
+	case parser input of
+		Nothing -> Nothing
+		Just (resultA, remainder) -> Just ((transformer resultA), remainder)
 
 -- Combine two parsers using a 'or' type operation        
 infixl 3 <|>
