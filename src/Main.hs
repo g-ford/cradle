@@ -4,6 +4,8 @@ data Expression =
   Num Char 
   | Add Expression Expression
   | Sub Expression Expression
+  | Mul Expression Expression
+  | Div Expression Expression
   deriving (Show) 
 
 data Assign = Assign Char Expression 
@@ -28,11 +30,16 @@ expression = term +> expression'
 expression' e = addOp <+> term >>> buildOp e +> expression'
             <|> result e
 
+term :: Parser Expression
+term = factor +> term'
+term' e = mulOp <+> term >>> buildOp e +> term'
+      <|> result e
+
+factor :: Parser Expression
+factor = digit >>> Num
+
 buildOp :: Expression -> ((Expression -> Expression -> Expression), Expression) -> Expression
 buildOp expressionA (op, expressionB) = op expressionA expressionB
-
-term :: Parser Expression
-term = digit >>> Num
 
 char :: Parser Char
 char [] = Nothing
@@ -59,6 +66,12 @@ result a cs = Just(a,cs)
 addOp :: Parser (Expression -> Expression -> Expression)
 addOp = literal '+' >>> (\_ -> Add)
     <|> literal '-' >>> (\_ -> Sub)
+
+mulOp :: Parser (Expression -> Expression -> Expression)
+mulOp = literal '*' >>> (\_ -> Mul)
+    <|> literal '/' >>> (\_ -> Div)
+
+
 
 
 -- Given a parser and a predicate return the parser only if it satisfies the predicate.
