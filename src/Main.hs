@@ -37,6 +37,7 @@ term' e = mulOp <+> term >>> buildOp e +> term'
 
 factor :: Parser Expression
 factor = digit >>> Num
+	 <|> literal '(' <-+> expression <+-> literal ')'
 
 buildOp :: Expression -> ((Expression -> Expression -> Expression), Expression) -> Expression
 buildOp expressionA (op, expressionB) = op expressionA expressionB
