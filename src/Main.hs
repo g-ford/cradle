@@ -1,14 +1,15 @@
 import Data.Char
 
 data Expression = 
-  Num Char 
+  Num Integer 
+  | Var String
   | Add Expression Expression
   | Sub Expression Expression
   | Mul Expression Expression
   | Div Expression Expression
   deriving (Show) 
 
-data Assign = Assign Char Expression 
+data Assign = Assign String Expression 
 	deriving Show
 
 type Parser a = String -> Maybe (a, String)
@@ -22,22 +23,23 @@ parse s = Assign id expr
             Nothing -> error "Invalid assignment"
             Just ((a, b), _) -> (a, b)
 
-assign :: Parser (Char, Expression)
-assign = letter <+-> literal '=' <+> expression
+assign :: Parser (String, Expression)
+assign = token(letters) <+-> token(literal '=') <+> expression
 
 expression :: Parser Expression
-expression = term +> expression'
+expression = token(term) +> expression'
 expression' e = addOp <+> term >>> buildOp e +> expression'
             <|> result e
 
 term :: Parser Expression
-term = factor +> term'
+term = token(factor) +> term'
 term' e = mulOp <+> term >>> buildOp e +> term'
       <|> result e
 
 factor :: Parser Expression
-factor = digit >>> Num
-	 <|> literal '(' <-+> expression <+-> literal ')'
+factor = token (literal '(') <-+> token(expression) <+-> token(literal ')')
+	 <|> number >>> Num
+	 <|> letters >>> Var
 
 buildOp :: Expression -> ((Expression -> Expression -> Expression), Expression) -> Expression
 buildOp expressionA (op, expressionB) = op expressionA expressionB
@@ -49,11 +51,20 @@ char (x:xs) = Just(x, xs)
 digit :: Parser Char
 digit = char <=> isDigit
 
+digits :: Parser String
+digits = iter digit 
+
+number :: Parser Integer
+number = digits >>> (\n -> read n :: Integer)
+
 space :: Parser Char
 space = char <=> isSpace    
 
 letter :: Parser Char
 letter = char <=> isAlpha
+
+letters :: Parser String
+letters = iter letter
 
 alphanum :: Parser Char
 alphanum = digit <|> letter
@@ -65,15 +76,20 @@ result :: a -> Parser a
 result a cs = Just(a,cs)
 
 addOp :: Parser (Expression -> Expression -> Expression)
-addOp = literal '+' >>> (\_ -> Add)
-    <|> literal '-' >>> (\_ -> Sub)
+addOp = token(literal '+') >>> (\_ -> Add)
+    <|> token(literal '-') >>> (\_ -> Sub)
 
 mulOp :: Parser (Expression -> Expression -> Expression)
-mulOp = literal '*' >>> (\_ -> Mul)
-    <|> literal '/' >>> (\_ -> Div)
+mulOp = token(literal '*') >>> (\_ -> Mul)
+    <|> token(literal '/') >>> (\_ -> Div)
 
+iter :: Parser Char -> Parser String
+iter m = (iterS m) <=> (/="")
+iterS m = m <+> iterS m >>> (\(x, y) -> x:y)
+	 <|> result []
 
-
+token :: Parser a -> Parser a
+token = (<+-> iterS space)
 
 -- Given a parser and a predicate return the parser only if it satisfies the predicate.
 infix 7 <=> 
