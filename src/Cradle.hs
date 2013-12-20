@@ -13,7 +13,5 @@ parse s = Assign id expr
             Nothing -> error "Invalid assignment"
             Just ((a, b), _) -> (a, b)
 
-
-
-
-
+-- | Parse and print. Utility and test function for use in @ghci@.
+p = putStrLn . parse
