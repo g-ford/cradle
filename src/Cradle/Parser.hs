@@ -1,48 +1,9 @@
+module Cradle.Parser
+where
+
 import Data.Char
 
-data Expression = 
-  Num Integer 
-  | Var String
-  | Add Expression Expression
-  | Sub Expression Expression
-  | Mul Expression Expression
-  | Div Expression Expression
-  deriving (Show) 
-
-data Assign = Assign String Expression 
-	deriving Show
-
 type Parser a = String -> Maybe (a, String)
-
-
-expected x = error $ x ++ " expected"
-
-parse :: String -> Assign
-parse s = Assign id expr
-    where (id, expr) = case assign s of 
-            Nothing -> error "Invalid assignment"
-            Just ((a, b), _) -> (a, b)
-
-assign :: Parser (String, Expression)
-assign = token(letters) <+-> token(literal '=') <+> expression
-
-expression :: Parser Expression
-expression = token(term) +> expression'
-expression' e = addOp <+> term >>> buildOp e +> expression'
-            <|> result e
-
-term :: Parser Expression
-term = token(factor) +> term'
-term' e = mulOp <+> term >>> buildOp e +> term'
-      <|> result e
-
-factor :: Parser Expression
-factor = token (literal '(') <-+> token(expression) <+-> token(literal ')')
-	 <|> number >>> Num
-	 <|> letters >>> Var
-
-buildOp :: Expression -> ((Expression -> Expression -> Expression), Expression) -> Expression
-buildOp expressionA (op, expressionB) = op expressionA expressionB
 
 char :: Parser Char
 char [] = Nothing
@@ -74,14 +35,6 @@ literal c = char <=> (==c)
 
 result :: a -> Parser a
 result a cs = Just(a,cs)
-
-addOp :: Parser (Expression -> Expression -> Expression)
-addOp = token(literal '+') >>> (\_ -> Add)
-    <|> token(literal '-') >>> (\_ -> Sub)
-
-mulOp :: Parser (Expression -> Expression -> Expression)
-mulOp = token(literal '*') >>> (\_ -> Mul)
-    <|> token(literal '/') >>> (\_ -> Div)
 
 iter :: Parser Char -> Parser String
 iter m = (iterS m) <=> (/="")
