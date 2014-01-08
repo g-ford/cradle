@@ -5,7 +5,7 @@ import Cradle.Parser
 
 data Program = Program Block deriving (Show)
 type Block = [Statement]
-data Statement = Statement Expression deriving (Show)
+data Statement = Statement Assign deriving (Show)
 
 data Expression = 
   Num Integer 
@@ -26,10 +26,10 @@ block :: Parser Block
 block = iterS statement
 
 statement :: Parser Statement
-statement = expression >>> Statement
+statement = assign >>> Statement
 
-assign :: Parser (String, Expression)
-assign = token(letters) <+-> token(literal '=') <+> expression
+assign :: Parser Assign
+assign = token(letters) <+-> token(literal '=') <+> expression >>> (\(x, y) -> Assign x y)
 
 expression :: Parser Expression
 expression = token(term) +> expression'
