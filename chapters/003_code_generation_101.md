@@ -38,7 +38,7 @@ Congratulations - you've made a 'pretty-printer' for a very small subset of math
 <aside class="col-xs-12 col-sm-4 pull-right well">
 <strong>A note on assembly</strong>
 
-<p>There are a couple of variants of x86 assembly syntax versions.</p>
+<p>There are a couple of variants of x86 assembly syntax versions and even more Assemblers.  As I will be using NASM, the syntax I am using throughout most of this is based on thr Intel variant as used by NASM.</p>
 </aside>
 
 The most basic assembly we can do is use registers to store each `term` in and then use these as the input to `ADD` or `SUB` as needed.  The order of operations are:

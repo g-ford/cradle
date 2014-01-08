@@ -96,7 +96,7 @@ import System.Environment
 import Cradle.Grammar
 
 main :: IO ()
-main = getArgs >>= print . parse . head
+main = getArgs >>= p . head
 
 parse :: String -> Assign
 parse s = Assign id expr
@@ -105,5 +105,5 @@ parse s = Assign id expr
             Just ((a, b), _) -> (a, b)
 
 -- | Parse and print. Utility and test function for use in @ghci@.
-p = putStrLn . parse
+p = putStrLn . show . parse
 ~~~
