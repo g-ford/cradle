@@ -35,7 +35,10 @@ emitBss expr = case expr of
     Div a b     -> emitBss a ++ emitBss b
     otherwise   -> ""
 
+emitTextA :: Assign -> String
 emitTextA (Assign a b) = emitText b ++ emitLn ("MOV [" ++ a ++ "], eax")
+
+emitText :: Expression -> String
 emitText expr = case expr of 
          Num a      -> emitLn ("MOV eax, " ++ (show a))
          Add a b    -> emitText a ++  pushEax ++ emitText b ++ add

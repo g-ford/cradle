@@ -6,7 +6,7 @@ import Cradle.Grammar
 import Cradle.Generator.Nasm
 
 main :: IO ()
-main = getArgs >>= print . emit . parse . head
+main = getArgs >>= e . head
 
 parse :: String -> Assign
 parse s = Assign id expr

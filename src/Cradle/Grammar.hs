@@ -3,6 +3,10 @@ where
 
 import Cradle.Parser
 
+data Program = Program Block deriving (Show)
+type Block = [Statement]
+data Statement = Statement Expression deriving (Show)
+
 data Expression = 
   Num Integer 
   | Var String
@@ -10,10 +14,19 @@ data Expression =
   | Sub Expression Expression
   | Mul Expression Expression
   | Div Expression Expression
-  deriving (Show) 
+  deriving (Show)
 
 data Assign = Assign String Expression 
 	deriving Show
+
+program :: Parser Program
+program = block <+-> accept "end" >>> Program
+
+block :: Parser Block
+block = iterS statement
+
+statement :: Parser Statement
+statement = expression >>> Statement
 
 assign :: Parser (String, Expression)
 assign = token(letters) <+-> token(literal '=') <+> expression

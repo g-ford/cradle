@@ -38,11 +38,17 @@ result a cs = Just(a,cs)
 
 iter :: Parser Char -> Parser String
 iter m = (iterS m) <=> (/="")
+
+iterS :: Parser a -> Parser [a]
 iterS m = m <+> iterS m >>> (\(x, y) -> x:y)
 	 <|> result []
 
 token :: Parser a -> Parser a
 token = (<+-> iterS space)
+
+-- |A parser that will accept a given alpha string
+accept :: String -> Parser String
+accept w = token (letters <=> (==w))
 
 -- Given a parser and a predicate return the parser only if it satisfies the predicate.
 infix 7 <=> 
