@@ -3,6 +3,8 @@ module Cradle.Generator.Nasm
 where
 
 import Cradle.Grammar
+import Cradle.Grammar.Expressions
+
 
 emit :: Assign -> String
 emit expr = externs 
