@@ -21,3 +21,15 @@ block = iterS statement
 
 statement :: Parser Statement
 statement = assign >>> Statement
+  <|> ifthen 
+
+ifthen :: Parser Statement		
+ifthen = accept "if" <-+> condition <+> block <+-> accept "endif" >>> buildBranch
+    where buildBranch (c, b) = Branch c b
+
+condition = tempPlaceholder
+
+-- |This is a temporary parser that accepts anything except keywords
+tempPlaceholder :: Parser String
+tempPlaceholder = token letters <=> (\x -> not $ any (==x) keywords) 
+  where keywords = ["if", "else", "end", "endif", "while", "until"]
