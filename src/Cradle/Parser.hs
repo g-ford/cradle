@@ -16,7 +16,8 @@ digits :: Parser String
 digits = iter digit 
 
 number :: Parser Integer
-number = digits >>> (\n -> read n :: Integer)
+number = literal '-' <-+> digits >>> (\n -> -1 * (read n :: Integer) )
+     <|> digits >>> (\n -> read n :: Integer)
 
 space :: Parser Char
 space = char <=> isSpace    
