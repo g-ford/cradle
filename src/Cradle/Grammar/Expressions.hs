@@ -4,6 +4,18 @@ where
 
 import Cradle.Parser
 
+-- BNF
+-- <b-expression>  ::= <b-term> [<orop> <b-term>]*
+-- <b-term>￼	   ::= <not-factor> [AND <not-factor>]*
+-- <not-factor>    ::= [NOT] <b-factor>	
+-- <b-factor>	   ::= <b-literal> | <b-variable> | <relation>
+-- <relation>	   ::= | <expression> [<relop> <expression]
+
+-- <expression>    ::= <term> [<addop> <term>]*	
+-- <term>		   ::= <signed factor> [<mulop> factor]*
+-- <signed factor> ::= [<addop>] <factor>
+-- <factor>        ::= <integer> | <variable> | (<b-expression>)
+
 data Expression = 
   Num Integer 
   | Var String

@@ -4,18 +4,17 @@ where
 
 import Cradle.Parser
 import Cradle.Grammar.Expressions
+import Cradle.Grammar.RelationalAlgebra
 
 data Program = Program Block deriving (Show)
 type Block = [Statement]
 data Statement = 
 	Statement Assign 
-  | Branch Condition Block
-  | Branch2 Condition Block Block
-  | While Condition Block
+  | Branch RelExpression Block
+  | Branch2 RelExpression Block Block
+  | While RelExpression Block
   | Break
   deriving (Show)
-
-type Condition = String
 
 program :: Parser Program
 program = block <+-> accept "end" >>> Program
@@ -45,7 +44,7 @@ ifelse = accept "if" <-+> condition <+> block <+-> accept "else" <+> block <+-> 
 breakSt :: Parser Statement
 breakSt = accept "break" >>> \_ -> Break
 
-condition = tempPlaceholder
+condition = boolExpression
 
 -- |This is a temporary parser that accepts anything except keywords
 tempPlaceholder :: Parser String

@@ -20,7 +20,10 @@ number = literal '-' <-+> digits >>> (\n -> -1 * (read n :: Integer) )
      <|> digits >>> (\n -> read n :: Integer)
 
 space :: Parser Char
-space = char <=> isSpace    
+space = char <=> isSpace  
+
+notSpace :: Parser Char
+notSpace = char <=> (not . isSpace)   
 
 letter :: Parser Char
 letter = char <=> isAlpha
@@ -48,8 +51,12 @@ token :: Parser a -> Parser a
 token = (<+-> iterS space)
 
 -- |A parser that will accept a given alpha string
+acceptWord :: String -> Parser String
+acceptWord w = token (letters <=> (==w))
+
+-- |A parser that will accept a given string
 accept :: String -> Parser String
-accept w = token (letters <=> (==w))
+accept w = token ((iter notSpace) <=> (==w))
 
 -- Given a parser and a predicate return the parser only if it satisfies the predicate.
 infix 7 <=> 

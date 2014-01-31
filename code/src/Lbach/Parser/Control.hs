@@ -29,16 +29,16 @@ other = token letters' <=> (\x -> not $ any (==x) keywords) >>> Statement
 
 -- |Parses if..then..end statments
 ifthen :: Parser Statement		
-ifthen = accept "if" <-+> condition <+> block <+-> accept "end" +>> Branch
+ifthen = acceptWord "if" <-+> condition <+> block <+-> acceptWord "end" +>> Branch
 
 -- |Parses if..then..else..end statments
 ifelse :: Parser Statement		
-ifelse = accept "if" <-+> condition <+> block <+-> accept "else" <+> block <+-> accept "end" >>> br
+ifelse = acceptWord "if" <-+> condition <+> block <+-> acceptWord "else" <+> block <+-> acceptWord "end" >>> br
     where br ((c, b1), b2) = Branch2 c b1 b2
 
 -- |Parses while..end statments
 while :: Parser Statement
-while = accept "while" <-+> condition <+> block <+-> accept "end" +>> While
+while = acceptWord "while" <-+> condition <+> block <+-> acceptWord "end" +>> While
 
 -- |Will eventually parse a boolean logic statment. Currently accepts anything expect keywords.
 condition :: Parser Condition
@@ -46,13 +46,13 @@ condition = token letters' <=> (\x -> not $ any (==x) keywords) >>> Condition
 
 -- |Parses loop..end statments
 loop :: Parser Statement
-loop = accept "loop" <-+> block <+-> accept "end" >>> Loop
+loop = acceptWord "loop" <-+> block <+-> acceptWord "end" >>> Loop
 
 -- |Parses do..until statments
 dountil :: Parser Statement
-dountil = accept "do" <-+> block <+-> accept "until" <+> condition +>> DoUntil
+dountil = acceptWord "do" <-+> block <+-> acceptWord "until" <+> condition +>> DoUntil
 
 -- |Parse a for loop
 forloop :: Parser Statement		
-forloop = accept "for" <-+> assign <+-> accept "to" <+> expr <+> block <+-> accept "end" >>> br
+forloop = acceptWord "for" <-+> assign <+-> acceptWord "to" <+> expr <+> block <+-> acceptWord "end" >>> br
     where br ((s, e), b) = For s e b
