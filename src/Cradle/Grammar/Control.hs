@@ -11,6 +11,8 @@ data Statement =
 	Statement Assign 
   | Branch Condition Block
   | Branch2 Condition Block Block
+  | While Condition Block
+  | Break
   deriving (Show)
 
 type Condition = String
@@ -25,6 +27,12 @@ statement :: Parser Statement
 statement = assign >>> Statement
   <|> ifelse
   <|> ifthen 
+  <|> while
+  <|> breakSt
+
+while :: Parser Statement		
+while = accept "while" <-+> condition <+> block <+-> accept "end" >>> buildWhile
+    where buildWhile (c, b) = While c b
 
 ifthen :: Parser Statement		
 ifthen = accept "if" <-+> condition <+> block <+-> accept "end" >>> buildBranch
@@ -33,6 +41,9 @@ ifthen = accept "if" <-+> condition <+> block <+-> accept "end" >>> buildBranch
 ifelse :: Parser Statement		
 ifelse = accept "if" <-+> condition <+> block <+-> accept "else" <+> block <+-> accept "end" >>> buildBranch
     where buildBranch ((c, b1), b2) = Branch2 c b1 b2
+
+breakSt :: Parser Statement
+breakSt = accept "break" >>> \_ -> Break
 
 condition = tempPlaceholder
 
