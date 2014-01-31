@@ -4,7 +4,7 @@ where
 
 import Cradle.Parser
 import Cradle.Grammar.Expressions
-import Cradle.Grammar.RelationalAlgebra
+import Cradle.Grammar.Boolean
 
 data Program = Program Block deriving (Show)
 type Block = [Statement]

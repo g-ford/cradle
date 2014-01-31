@@ -1,4 +1,4 @@
-module Cradle.Grammar.RelationalAlgebra
+module Cradle.Grammar.Boolean
 
 where
 
