@@ -84,11 +84,9 @@ The first control structure we will look at is the basic if statement.  This tak
 
 The hardest part of this section is deciding what our syntax will be.  To keep things simple, we will stick to Crenshaws recommended syntax of 
 
-    if <condition> <block> endif
+    if <condition> <block> end
     
-By having an explicit block terminator `endif` we avoid the ambiguity of deciding 'is this still part of the if body?'  
-    
-### Parsing If-Then
+By having an explicit block terminator `end` we avoid the ambiguity of deciding 'is this still part of the if body?'  
 
 We create a new `Statement` type constructor which I called `Branch`.  A `Branch` will hold the `Condition` and the body of the if statement, which is really just another `Block`.  For now a condition will just be a string. 
 
@@ -108,7 +106,7 @@ statement = assign >>> Statement
   <|> ifthen 
 
 ifthen :: Parser Statement		
-ifthen = accept "if" <-+> condition <+> block <+-> accept "endif" >>> buildBranch
+ifthen = accept "if" <-+> condition <+> block <+-> accept "end" >>> buildBranch
     where buildBranch (c, b) = Branch c b
 
 condition = tempPlaceholder
@@ -122,9 +120,20 @@ tempPlaceholder = token letters <=> (\x -> not $ any (==x) keywords)
 Because we use `block` as part of the function, we can parse multi-statement bodies, and even nested if statments such as:
 
 ~~~ Haskell
-*Main> ifthen "if cond a=1 if cond b=2 endif endif "
+*Main> ifthen "if cond a=1 if cond b=2 end end "
 Just (Branch "cond" [Statement (Assign "a" (Num 1)),Branch "cond" [Statement (Assign "b" (Num 2))]],"")
-*Main> program "x=0 if a x=1 if b b=3 endif endif b=4 end"
+*Main> let pro = "x=0 \nif a \n\tx=1 \n\tif b \n\t\tb=3 \n\tend \nend \nb=4 \nend"
+*Main> putStrLn pro
+x=0
+if a
+	x=1
+	if b
+		b=3
+	end
+end
+b=4
+end
+*Main> program pro
 Just (Program [Statement (Assign "x" (Num 0)),
                Branch "a" [Statement (Assign "x" (Num 1)),
                            Branch "b" [Statement (Assign "b" (Num 3))]
@@ -135,4 +144,36 @@ Just (Program [Statement (Assign "x" (Num 0)),
 
 Got to love the power of recursion.
 
+## If-Else
+
+Now that we have the basic concepts of creating branches, extending it to the if-else statement not so hard. Extending the definition of if to include the else statement looks like:
+
+    if <condition> <block> [ else <block>] end
+
+You could treat `else` as an optional part of `ifthen` but I chose to seperate them into seperate type constructors and functions. 
+
+~~~ Haskell
+data Statement = 
+	Statement Assign 
+  | Branch Condition Block
+  | Branch2 Condition Block Block
+  deriving (Show)
+              
+statement :: Parser Statement
+statement = assign >>> Statement
+  <|> ifelse
+  <|> ifthen 
+              
+ifelse :: Parser Statement		
+ifelse = accept "if" <-+> condition <+> block <+-> accept "else" <+> block <+-> accept "end" >>> buildBranch
+    where buildBranch ((c, b1), b2) = Branch2 c b1 b2
+~~~
+    
+As you can see, it is much the same as the basic if statement. The only difference is that we add a second `Block` to the type constructor to allow for the else body.  Again, recusrion allows for nested if statements in nested if-else statements all the way down to turtles.
+
+## Basic loop with while
+
+Parseing a while loop is actually extremely similar to the `ifThen` we have already done.  The real difference comes down to how the code generator treats them. Our while looks like:
+
+	while <condition> <block>
 
