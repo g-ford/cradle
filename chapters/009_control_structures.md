@@ -2,7 +2,7 @@
 layout: layout
 title: "Basic Control Structures"
 group: book
-permalink: cbasic_control_structures.html
+permalink: basic_control_structures.html
 ---
 
 # Basic Control Structures
@@ -173,7 +173,31 @@ As you can see, it is much the same as the basic if statement. The only differen
 
 ## Basic loop with while
 
-Parseing a while loop is actually extremely similar to the `ifThen` we have already done.  The real difference comes down to how the code generator treats them. Our while looks like:
+There are a few kinds of loops in your average imperitive langauage.  There are pre and post-condition loops, loops which you can break out of the middle and then there a loops that iterate over a collection.
 
-	while <condition> <block>
+Parseing a while loop is actually extremely similar to the `ifThen` we have already done.  The real difference comes down to how the code generator treats them. Our definition of while looks like:
 
+	while <condition> <block> end
+
+This is so simialar to the `ifThen` case that you should be able to see where this is headed.
+
+~~~ Haskell
+data Statement = 
+	Statement Assign 
+  | Branch Condition Block
+  | Branch2 Condition Block Block
+  | While Condition Block
+  deriving (Show)
+
+statement :: Parser Statement
+statement = assign >>> Statement
+  <|> ifelse
+  <|> ifthen 
+  <|> while
+
+while :: Parser Statement		
+while = accept "while" <-+> condition <+> block <+-> accept "end" >>> buildWhile
+    where buildWhile (c, b) = While c b
+~~~
+
+We could go on adding other looping constructs such as `do...until condition` or `loop...if cond break...endloop` etc but I think this one is sufficient to see that they are all conceptually similar and will result be very similar code.  Most of the interesting part of the different types of looping constructs are in the generated code which we will visit at a later stage.
