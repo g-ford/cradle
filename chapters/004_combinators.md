@@ -7,7 +7,7 @@ permalink: combinators.html
 
 # Parser Combinators 
 
-First of all, we need to define what a **parser** is:
+First of all, let's define what a **parser** is:
 
 > [parse](http://dictionary.reference.com/browse/parser) - 3. Computers. to analyze (a string of characters) in order to associate groups of characters with the syntactic units of the underlying grammar. ([Dictionary.com](http://dictionary.com))
 
