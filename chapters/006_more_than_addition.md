@@ -243,10 +243,13 @@ factor = token (literal '(') <-+> token(expression) <+-> token(literal ')')
 	 <|> letters >>> Var
 
 number :: Parser Integer
-number = digits >>> (\n -> read n :: Integer)
+number = literal '-' <-+> digits >>> (\n -> -1 * (read n :: Integer) )
+     <|> digits >>> (\n -> read n :: Integer)
 ~~~
 
-We've changed the `Num` data constructor to use and integer and created a new `number` parser that returns a `Parser` wrapped `Integer` using `read`.  This is then used in `factor` instead of the basic `digits`.  
+We've changed the `Num` data constructor to use and integer and created a new `number` parser that returns a `Parser` wrapped `Integer` using `read`.  This is then used in `factor` instead of the basic `digits`. I also slipped the ability to prefix a number with a sign allowing expressions such as `-1 * 4`.
+
+
 
 ## More than...?
 
