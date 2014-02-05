@@ -11,11 +11,6 @@ import Cradle.Parser
 -- <b-factor>	   ::= <b-literal> | <b-variable> | <relation>
 -- <relation>	   ::= | <expression> [<relop> <expression]
 
--- <expression>    ::= <term> [<addop> <term>]*	
--- <term>		   ::= <signed factor> [<mulop> factor]*
--- <signed factor> ::= [<addop>] <factor>
--- <factor>        ::= <integer> | <variable> | (<b-expression>)
-
 data Expression = 
   Num Integer 
   | Var String

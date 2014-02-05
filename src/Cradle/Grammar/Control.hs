@@ -10,9 +10,9 @@ data Program = Program Block deriving (Show)
 type Block = [Statement]
 data Statement = 
 	Statement Assign 
-  | Branch RelExpression Block
-  | Branch2 RelExpression Block Block
-  | While RelExpression Block
+  | Branch BoolExpression Block
+  | Branch2 BoolExpression Block Block
+  | While BoolExpression Block
   | Break
   deriving (Show)
 
