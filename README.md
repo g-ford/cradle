@@ -2,7 +2,7 @@
 
 [Read the articles here](http://alephnullplex.github.io/cradle/)
 
-When looking for information on getting started with learning how to build an interpreter or compiler, inevitable two resources come up.  First, the canonical compiler resource, the [Dragon Book](http://en.wikipedia.org/wiki/Dragon_Book_(computer_science\)), and second, [Let's Build a Compiler](http://compilers.iecc.com/crenshaw/) (LBaC) by Jack W. Crenshaw.
+When looking for information on getting started with learning how to build an interpreter or compiler, inevitable two resources come up.  First, the canonical compiler resource, the [Dragon Book](http://en.wikipedia.org/wiki/Dragon_Book_\(computer_science\)), and second, [Let's Build a Compiler](http://compilers.iecc.com/crenshaw/) (LBaC) by Jack W. Crenshaw.
  
 So rather than spending time and money diving into the deep end, I decided to start with LBaC.  Crenshaws approach is a much more hands on, top down approach that is easier to see immediate results and applications.  It skimps a lot on the theory, models and alternatives and I will attempt to fill in the gaps where necessary.
 
