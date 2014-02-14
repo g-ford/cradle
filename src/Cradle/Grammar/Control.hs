@@ -7,7 +7,7 @@ import Cradle.Grammar.Expressions
 import Cradle.Grammar.Boolean
 
 data Program = Program Block deriving (Show)
-type Block = [Statement]
+newtype Block = Block [Statement] deriving (Show)
 data Statement = 
 	Statement Assign 
   | Branch BoolExpression Block
@@ -20,7 +20,7 @@ program :: Parser Program
 program = block <+-> accept "end" >>> Program
 
 block :: Parser Block
-block = iterS statement
+block = iterS statement >>> Block
 
 statement :: Parser Statement
 statement = assign >>> Statement

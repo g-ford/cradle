@@ -6,7 +6,7 @@ import Cradle.Grammar.Control
 import Cradle.Generator.Nasm
 
 main :: IO ()
-main = getArgs >>= p . head
+main = getArgs >>= e . head
 
 parse :: String -> Program
 parse s = case program s of 
@@ -17,4 +17,4 @@ parse s = case program s of
 p = putStrLn . show . parse
 
 -- | Parse and emit.
---e = putStrLn . emit . parse
+e = putStrLn . emit . parse

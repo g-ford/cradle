@@ -27,7 +27,8 @@ boolExpression' e = boolOp <+> bFactor >>> buildRelOp e +> boolExpression'
             <|> result e
 
 bFactor :: Parser BoolExpression
-bFactor = relExpression
+bFactor = token(literal '(') <-+> boolExpression <+-> token(literal ')')
+	  <|> relExpression
 	  <|> bNot <+> bLiteral >>> (\(n, lit) -> n lit)
       <|> bLiteral
       <|> bNot <+> bVar >>> (\(n, lit) -> n lit)
