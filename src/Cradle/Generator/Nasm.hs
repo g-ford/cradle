@@ -25,12 +25,12 @@ instance Emittable Program where
     emitText l (Program p) = emitText l p
 
 instance Emittable Block where
-    emitData (Block b) = foldl (++) ""  (map  emitData b)
-    emitBss (Block b) = foldl (++) ""  (map  emitBss b)
-    emitText l (Block []) = (l, "")
-    emitText l (Block (b:bs)) = (l', first ++ rest)
-        where (l1, first) = emitText (l + 1) b
-              (l', rest)   = emitText l1 (Block bs)
+    emitData (Block b)          = foldl (++) ""  (map  emitData b)
+    emitBss (Block b)           = foldl (++) ""  (map  emitBss b)
+    emitText l (Block [])       = (l, "")
+    emitText l (Block (b:bs))   = (l', first ++ rest)
+                                    where (l1, first)   = emitText (l + 1) b
+                                          (l', rest)    = emitText l1 (Block bs)
 
 instance Emittable Statement where
     emitData s = case s of
@@ -59,9 +59,9 @@ instance Emittable Statement where
         otherwise -> (l, emitLn "<placeholder>")
 
 instance Emittable BoolExpression where
-    emitData e =  ""
-    emitBss e =  ""
-    emitText l e = (l, emitLn "<condition>" ++ emitLn ("jne " ++ "Label" ++ (show l)))
+    emitData e      =  ""
+    emitBss e       =  ""
+    emitText l e    = (l, emitLn "<condition>" ++ emitLn ("jne " ++ "Label" ++ (show l)))
 
 instance Emittable Expression where
     emitData e = case e of
@@ -69,7 +69,7 @@ instance Emittable Expression where
         Sub a b     -> emitData a ++ emitData b
         Mul a b     -> emitData a ++ emitData b
         Div a b     -> emitData a ++ emitData b
-        Var a         -> "" --emitLn (a ++ "\tdd\t0")
+        Var a       -> "" --emitLn (a ++ "\tdd\t0")
         otherwise   -> ""
     emitBss expr = case expr of
         Add a b     -> emitBss a ++ emitBss b
@@ -80,17 +80,17 @@ instance Emittable Expression where
     emitText l expr = case expr of 
          Num a      -> (l, emitLn ("MOV eax, " ++ (show a)))
          Add a b    -> (l, partA ++  pushEax ++ partB ++ add)
-            where (_, partA) = emitText l a
-                  (_, partB) = emitText l b
+                        where (_, partA) = emitText l a
+                              (_, partB) = emitText l b
          Sub a b    -> (l, partA ++  pushEax ++ partB ++ sub)
-            where (_, partA) = emitText l a
-                  (_, partB) = emitText l b
+                        where (_, partA) = emitText l a
+                              (_, partB) = emitText l b
          Mul a b    -> (l, partA ++  pushEax ++ partB ++ mul)
-            where (_, partA) = emitText l a
-                  (_, partB) = emitText l b
+                        where (_, partA) = emitText l a
+                              (_, partB) = emitText l b
          Div a b    -> (l, partA ++  pushEax ++ partB ++ divide)
-            where (_, partA) = emitText l a
-                  (_, partB) = emitText l b
+                        where (_, partA) = emitText l a
+                              (_, partB) = emitText l b
          Var a      -> (l, emitLn ("MOV eax, [" ++ a ++ "]"))
 
 
