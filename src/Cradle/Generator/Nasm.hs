@@ -25,11 +25,11 @@ instance Emittable Program where
     emitText l (Program p) = emitText l p
 
 instance Emittable Block where
-    emitData (Block b)          = foldl (++) ""  (map  emitData b)
-    emitBss (Block b)           = foldl (++) ""  (map  emitBss b)
+    emitData (Block b)          = foldl1 (++) (map emitData b)
+    emitBss (Block b)           = foldl1 (++) (map emitBss b)
     emitText l (Block [])       = (l, "")
     emitText l (Block (b:bs))   = (l', first ++ rest)
-                                    where (l1, first)   = emitText (l + 1) b
+                                    where (l1, first)   = emitText l b
                                           (l', rest)    = emitText l1 (Block bs)
 
 instance Emittable Statement where
@@ -44,24 +44,27 @@ instance Emittable Statement where
     emitText l s = case s of
         Statement (Assign a b)  -> (l', block1 ++ emitLn ("MOV [" ++ a ++ "], eax"))
                                     where (l', block1) = emitText l b
-        Branch condition b      -> (l', cond ++ block1 ++ emitLabel)
-                                    where (l1, cond) = emitText l condition
-                                          (l', block1) = emitText l1 b
-                                          emitLabel = "Label" ++ (show l) ++ ":\n"
+        Branch condition b      -> (l', cond ++ jne ++ block ++ end)
+                                    where (l1, label)  = getLbl l
+                                          (l2, cond)   = emitText l1 condition
+                                          (l', block)  = emitText l2 b
+                                          jne          = emitJne label
+                                          end          = emitLabel label
         
-        Branch2 condition b1 b2 -> (l', cond ++ block1 ++ branch ++ emitLabel1 ++ block2 ++ emitLabel2)
-                                    where (l1, cond)       = emitText l condition 
-                                          (l2, block1)     = emitText l1 b1
-                                          (l', block2)     = emitText l2 b2
-                                          emitLabel1 = "Label" ++ (show l1) ++ ":\n"
-                                          emitLabel2 = "Label" ++ (show l2) ++ ":\n"
-                                          branch = emitLn ("jmp " ++ "Label" ++ (show l2))
+        Branch2 condition b1 b2 -> (l', cond ++ emitJne label1 
+                                             ++ block1 ++ emitJmp label2 
+                                             ++ emitLabel label1 ++ block2 ++ emitLabel label2)
+                                    where (l1, label1)     = getLbl l
+                                          (l2, label2)     = getLbl l1
+                                          (l3, cond)       = emitText l2 condition 
+                                          (l4, block1)     = emitText l3 b1
+                                          (l', block2)     = emitText l4 b2
         otherwise -> (l, emitLn "<placeholder>")
 
 instance Emittable BoolExpression where
     emitData e      =  ""
     emitBss e       =  ""
-    emitText l e    = (l, emitLn "<condition>" ++ emitLn ("jne " ++ "Label" ++ (show l)))
+    emitText l e    = (l, emitLn "<condition>")
 
 instance Emittable Expression where
     emitData e = case e of
@@ -99,6 +102,12 @@ instance Emittable Expression where
 ---- Helpers
 
 emitLn x = "\t" ++ x ++ "\n" 
+emitJne l = emitLn $ "jne " ++ l
+emitJmp l = emitLn $ "jmp " ++ l
+emitLabel l = l ++ ":\n"
+
+getLbl :: Integer -> (Integer, String)
+getLbl count = (count + 1, "L" ++ (show count))
 
 -- Basic math functions
 popEbx = emitLn "POP ebx"
@@ -108,6 +117,7 @@ add = popEbx ++ emitLn "ADD eax, ebx"
 sub = popEbx ++ emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
 mul = popEbx ++ emitLn "MUL ebx"
 divide = emitLn "MOV ebx, eax" ++ popEax ++ emitLn "MOV edx, 0" ++ emitLn "DIV ebx"
+
 
 
 externs = "extern _printf\n"
