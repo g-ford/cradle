@@ -12,7 +12,7 @@ However there was one problem with LBaC:
 
 This series was written way back in the 90's when [Turbo Pascal](http://en.wikipedia.org/wiki/Turbo_Pascal) was cool.  Thankfully the theory and basic practices are still relevant. 
 
-##So why Haskell?
+## So why Haskell?
 
 First and formost because it was my [Language of the Year](http://alephnullplex.appspot.com/blog/view/2009/06/04/one-language-a-year) at the time of starting this project.  Secondly there is extensive tools for more advanced compiler writing such as parsers, lexers and LLVM bindings etc. for going beyond the basics.
 
