@@ -279,6 +279,7 @@ sub = popEbx ++ emitLn "SUB eax, ebx" ++ emitLn "NEG eax"
 ## Living in a left associative world
 
 Unfortunately the math that the majority of us know is left associative.  This means that `1-2+2` is commonly interpretted as `(1-2)+2` resulting in `1`.  There is actually a simple approach to acheiving this - we look one more character ahead and build the left side first.  
+
 ~~~ Haskell
 expression (x:[]) = term x
 expression (a:b:c:d:ds) = (addOperation d) (expression [a,b,c]) (expression ds)
