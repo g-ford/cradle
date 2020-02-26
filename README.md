@@ -14,7 +14,7 @@ This series was written way back in the 90's when [Turbo Pascal](http://en.wikip
 
 ## So why Haskell?
 
-First and formost because it was my [Language of the Year](http://alephnullplex.appspot.com/blog/view/2009/06/04/one-language-a-year) at the time of starting this project.  Secondly there is extensive tools for more advanced compiler writing such as parsers, lexers and LLVM bindings etc. for going beyond the basics.
+First and formost because it was my "Language of the Year" at the time of starting this project.  Secondly there is extensive tools for more advanced compiler writing such as parsers, lexers and LLVM bindings etc. for going beyond the basics.
 
 And lastly because Haskell is fundamentally different to my day-to-day languages.  Using something completely different helps to keep things a little more exciting. 
 
