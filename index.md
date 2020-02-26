@@ -15,9 +15,9 @@ However there was one problem with LBaC:
 
 This series was written way back in the 90's when [Turbo Pascal](http://en.wikipedia.org/wiki/Turbo_Pascal) was cool.  Thankfully the theory and basic practices are still relevant. 
 
-##So why Haskell?
+## So why Haskell?
 
-First and formost because it was my [Language of the Year](http://alephnullplex.appspot.com/blog/view/2009/06/04/one-language-a-year) at the time of starting this project.  Secondly there is extensive tools for more advanced compiler writing such as parsers, lexers and LLVM bindings etc. for going beyond the basics.
+First and formost because it was my "Language of the Year" at the time of starting this project.  Secondly there is extensive tools for more advanced compiler writing such as parsers, lexers and LLVM bindings etc. for going beyond the basics.
 
 And lastly because Haskell is fundamentally different to my day-to-day languages.  Using something completely different helps to keep things a little more exciting. 
 
@@ -25,4 +25,4 @@ And lastly because Haskell is fundamentally different to my day-to-day languages
 
 I will be writing these articles as I work my way through LBaC in my spare time (as and when I can find some) so they may be a little few and far between.
 
-All code, and these articles, will be available on [Github](http://github.com/alephnullplex/cradle). You will also need [LBaC](http://compilers.iecc.com/crenshaw/) ([PDF Version](http://www.stack.nl/~marcov/compiler.pdf)) and the [Haskell Platform](http://hackage.haskell.org/platform/).
+All code, and these articles, will be available on [Github](http://github.com/g-ford/cradle). You will also need [LBaC](http://compilers.iecc.com/crenshaw/) ([PDF Version](http://www.stack.nl/~marcov/compiler.pdf)) and the [Haskell Platform](http://hackage.haskell.org/platform/).
