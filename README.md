@@ -1,6 +1,6 @@
 # Let's Build a Compiler (in Haskell)
 
-[Read the articles here](http://alephnullplex.github.io/cradle/)
+[Read the articles here](https://g-ford.github.io/cradle/)
 
 When looking for information on getting started with learning how to build an interpreter or compiler, inevitable two resources come up.  First, the canonical compiler resource, the [Dragon Book](http://en.wikipedia.org/wiki/Dragon_Book_\(computer_science\)), and second, [Let's Build a Compiler](http://compilers.iecc.com/crenshaw/) (LBaC) by Jack W. Crenshaw.
  
@@ -20,6 +20,6 @@ And lastly because Haskell is fundamentally different to my day-to-day languages
 
 ## Following along
 
-I will be [writing articles](http://alephnullplex.github.io/cradle/) as I work my way through LBaC in my spare time (as and when I can find some) so they may be a little few and far between.
+I will be [writing articles](https://g-ford.github.io/cradle/) as I work my way through LBaC in my spare time (as and when I can find some) so they may be a little few and far between.
 
-All code, and these articles, will be available on [Github](http://github.com/alephnullplex/cradle). You will also need [LBaC](http://compilers.iecc.com/crenshaw/) ([PDF Version](http://www.stack.nl/~marcov/compiler.pdf)) and the [Haskell Platform](http://hackage.haskell.org/platform/).
+All code, and these articles, will be available on [Github](http://github.com/g-ford/cradle). You will also need [LBaC](http://compilers.iecc.com/crenshaw/) ([PDF Version](http://www.stack.nl/~marcov/compiler.pdf)) and the [Haskell Platform](http://hackage.haskell.org/platform/).
